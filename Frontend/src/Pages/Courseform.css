@@ -1,0 +1,146 @@
+/* Course Form Page Background */
+.course-form-page {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #111827;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Course Form Container */
+.course-form-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  background-color: #1f2937; /* Dark background */
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Form Title */
+.course-form-container h2 {
+  text-align: center;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  margin-bottom: 1.5rem;
+  color: #f9fafb;
+}
+
+/* Form Group Styling */
+.form-group {
+  margin-bottom: 2.5rem; /* Increased space between fields */
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+/* Input Fields */
+.form-group input[type="text"],
+.form-group input[type="number"] {
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #111827;
+  color: #f9fafb;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus {
+  border-color: #6366f1;
+}
+
+/* Rating Slider Group */
+.form-group.rating-group {
+  margin-bottom: 2rem; /* Adjusted space below the rating group */
+}
+
+.rating-group label {
+  margin-bottom: 0.8rem; /* Space between label and slider */
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+/* Separator Line between Label and Slider */
+.rating-separator {
+  width: 100%;
+  height: 1px;
+  background-color: #374151;
+  margin: 0.8rem 0 1rem 0;
+}
+
+/* Range Input Styling */
+.rating-group input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #6366f1; /* Purple accent for slider */
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 0.8rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #6366f1;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .course-form-container h2 {
+    font-size: 1.8rem;
+  }
+
+  .submit-btn {
+    font-size: 1rem;
+  }
+}
+
+/* Rating Group Styling */
+.form-group.rating-group {
+  margin-bottom: 2.5rem; /* Adjusted bottom space */
+}
+
+.rating-group label {
+  display: block; /* Ensures label and stars are on separate lines */
+  margin-bottom: 0.8rem; /* Space between label and slider */
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.rating-group .rating-label {
+  display: inline-block; /* Keeps stars on the same line with the label */
+  font-size: 1.2rem;
+}
+
+.rating-group .stars {
+  margin-right: 0.5rem;
+  color: #facc15; /* Yellow for stars */
+}
+
+/* Slider Style */
+.rating-group input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #6366f1; /* Purple accent for slider */
+}
