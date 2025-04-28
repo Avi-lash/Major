@@ -1,0 +1,95 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+  margin: 0; /* Remove default body margin */
+  background-color: #171212; /* Optional: Add a background color to the body */
+  font-family: sans-serif; /* Optional: Set a default font */
+}
+
+.quiz-container {
+  max-width: 500px; /* Increased max-width for better readability of answer key */
+  margin: 30px auto; /* Adjusted margin for better spacing on larger screens */
+  padding: 30px; /* Increased padding */
+  text-align: center;
+  background: #7d7bfd; /* Changed background to white for better contrast */
+  border-radius: 12px; /* Slightly more rounded corners */
+  box-shadow: 0 0 20px rgba(234, 212, 255, 0.8);  /* Softer, more modern shadow */
+}
+
+h2 {
+  font-size: 24px; /* Slightly larger font size for headings */
+  color: #2c3e50; /* Darker, more professional heading color */
+  margin-bottom: 20px;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 240px; /* Adjust width for padding */
+  padding: 6px 10px; /* Increased padding *//* Adjusted margin */
+  border: none;
+  border-radius: 8px; /* More rounded buttons */
+  font-size: 18px; /* Slightly larger font size for buttons */
+  cursor: pointer;
+  background: #7d7bfd; /* Updated button color */
+  color: white;
+  transition: background 0.2s ease-in-out; /* Smoother transition */
+}
+
+button:hover {
+  background: #d586ff; /* Darker shade on hover */
+}
+
+.options {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 15px; /* Increased gap between options */
+  margin-bottom: 25px;
+}
+
+.options button {
+  width: calc(100% - 20px); /* Adjust width for padding */
+}
+
+.options button.selected {
+  background-color: #2ecc71; /* Green color for selected option */
+  color: white;
+}
+
+.answer-key {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  text-align: left; /* Align answer key text to the left */
+}
+
+.answer-key li {
+  margin-bottom: 20px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: rgb(180, 191, 255);
+}
+
+.answer-key p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.answer-key strong {
+  font-weight: bold;
+  color: #333;
+}
+
+.answer-key .correct {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+.answer-key .incorrect {
+  color: #e74c3c;
+  font-weight: bold;
+}

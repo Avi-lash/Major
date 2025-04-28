@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ShowCourse.css';
@@ -37,10 +38,10 @@ function CourseList() {
       <div className="navbar">
         <div className="logo">CourseManager</div>
         <div className="nav-links">
-          <a href="#">Home</a>
-          <a href="#">Courses</a>
-          <a href="#">About</a>
-          <a href="#">Contact</a>
+        <Link to="/">Home</Link>
+  <Link to="/">Courses</Link>
+  <Link to="/quiz">Quiz</Link>
+  <Link to="#">Contact</Link>
         </div>
       </div>
 
