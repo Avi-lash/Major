@@ -1,0 +1,82 @@
+/* Home Page */
+.home {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #060505, #131518);
+    min-height: 100vh;
+  }
+
+  .hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4rem 10%;
+  }
+  
+  .hero-content h2 {
+    font-size: 2rem;
+    margin: 0;
+    color: #254774;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.8rem;
+    margin: 0.5rem 0;
+    color: #203c66;
+  }
+  
+  .highlight {
+    color: #4f46e5;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+    color: #333;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .cta-button {
+    background-color: #4f46e5;
+    color: white;
+    padding: 0.8rem 1.4rem;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 24px 0 rgba(97, 134, 255, 0.533);
+
+    transition: background-color 0.3s ease;
+  }
+  
+  .cta-button:hover {
+    background-color: #111018;
+  }
+  
+  .bold-text {
+    font-weight: bold;
+    color: #facc15;
+  }
+  
+  .hero-image-placeholder {
+    width: 300px;
+    height: 350px;
+    background: #e5e7eb;
+    border-radius: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #9ca3af;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  
+  .footer-banner {
+    background-color: #4f46e5;
+    color: white;
+    text-align: center;
+    padding: 1.2rem;
+    font-weight: 500;
+    font-size: 1rem;
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+    margin-top: 4rem;
+  }

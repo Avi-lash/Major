@@ -35,15 +35,6 @@ function CourseList() {
 
   return (
     <>
-      <div className="navbar">
-        <div className="logo">CourseManager</div>
-        <div className="nav-links">
-        <Link to="/">Home</Link>
-  <Link to="/">Courses</Link>
-  <Link to="/quiz">Quiz</Link>
-  <Link to="#">Contact</Link>
-        </div>
-      </div>
 
       <div className="course-list-page">
         <div className="course-list-container">
