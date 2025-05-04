@@ -34,45 +34,54 @@ function CourseList() {
   }, []);
 
   return (
-    <>
-
-      <div className="course-list-page">
-        <div className="course-list-container">
-          <h2 className="title">📚 All Courses</h2>
-          {courses.length === 0 ? (
-            <p className="empty-msg">No courses available 😢</p>
-          ) : (
-            <div className="courses-grid">
-              {courses.map((course, index) => {
-                const borderColor = cardColors[index] || '#6366f1';
-                return (
-                  <div 
-                    key={course.id || index} 
-                    className="course-card" 
-                    style={{
-                      borderLeft: `5px solid ${borderColor}`,
-                      boxShadow: `0 4px 20px ${borderColor}55` // transparent shadow
-                    }}
+    <div className="course-list-page">
+      <div className="course-list-container">
+        <h2 className="title">📚 All Courses</h2>
+        {courses.length === 0 ? (
+          <p className="empty-msg">No courses available 😢</p>
+        ) : (
+          <div className="courses-grid">
+            {courses.map((course, index) => {
+              const borderColor = cardColors[index] || '#6366f1';
+              return (
+                <div 
+                  key={course.id || index} 
+                  className="course-card" 
+                  style={{
+                    borderLeft: `5px solid ${borderColor}`,
+                    boxShadow: `0 4px 20px ${borderColor}55`
+                  }}
+                >
+                  <h3>{course.courseName || 'Unnamed Course'}</h3>
+                  <p><strong>Fees:</strong> ₹{course.courseFees || 'N/A'}</p>
+                  <p><strong>Duration:</strong> {course.timeRequired || 'N/A'} hrs</p>
+                  <p><strong>Teacher:</strong> {course.teacherName || 'Unknown'}</p>
+                  <p><strong>Rating:</strong> ⭐ {course.rating || '0'} / 5</p>
+                  <button 
+                    className="buy-now-button"
+                    style={{ backgroundColor: borderColor }}
                   >
-                    <h3>{course.courseName || 'Unnamed Course'}</h3>
-                    <p><strong>Fees:</strong> ₹{course.courseFees || 'N/A'}</p>
-                    <p><strong>Duration:</strong> {course.timeRequired || 'N/A'} hrs</p>
-                    <p><strong>Teacher:</strong> {course.teacherName || 'Unknown'}</p>
-                    <p><strong>Rating:</strong> ⭐ {course.rating || '0'} / 5</p>
-                    <button 
-                      className="buy-now-button"
-                      style={{ backgroundColor: borderColor }}
-                    >
-                      Buy Now
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                    Buy Now
+                  </button>
+
+                  {/* ✅ Watch Video Button */}
+                  {course.videoId && (
+                    <Link to={`/videoplayer/${course.videoId}`}>
+                      <button 
+                        className="watch-video-button"
+                        style={{ marginTop: '10px', backgroundColor: borderColor }}
+                      >
+                        ▶️ Watch Video
+                      </button>
+                    </Link>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 
