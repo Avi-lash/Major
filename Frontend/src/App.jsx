@@ -9,6 +9,9 @@ import ForgotPasswordForm from './Pages/ForgotPasswordForm'
 import SignupForm from './Pages/signup'
 import UpdatePasswordForm from './Pages/UpdatePasswordForm'
 import VerifyOtpForm from './Pages/VerifyOtpForm'
+import TeacherHomePanel from './Pages/Teacherpanel';
+import CourseUploadForm from './Pages/addcourse';
+import CourseControlPanel from './Pages/viewcourse';
 
 function App() {
   return (
@@ -26,6 +29,9 @@ function App() {
         <Route path="/signup" element={<SignupForm />}/>
         <Route path="/update-password" element={<UpdatePasswordForm />}/>
         <Route path="/verifyotp" element={<VerifyOtpForm />}/>
+        <Route path="/Teacherpanel" element={<TeacherHomePanel />} />
+        <Route path="/courseupload" element={<CourseUploadForm />} />
+        <Route path="/viewcourse" element={<CourseControlPanel />} />
      </Routes>
     </Router>
   );
