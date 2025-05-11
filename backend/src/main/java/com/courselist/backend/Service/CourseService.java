@@ -1,5 +1,5 @@
 package com.courselist.backend.Service;
-import com.courselist.backend.dbCLasses.Courses;
+import com.courselist.backend.dbCLasses.CourseEntity;
 import com.courselist.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,7 +8,7 @@ public class CourseService {
     @Autowired
     CourseRepository cr;
 
-    public String addCourse(Courses course) {
+    public String addCourse(CourseEntity course) {
         try {
             cr.save(course);
             return "Course Registered";

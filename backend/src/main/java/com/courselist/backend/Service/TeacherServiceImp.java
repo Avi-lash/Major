@@ -46,15 +46,29 @@ public class TeacherServiceImp  {
 
 
     }
-    public String loginTeacher(TeacherController.LoginRequest request) {
+    public Map<String, Object> loginTeacher(TeacherController.LoginRequest request) {
         String email = request.email;
         String password = request.password;
-        TeacherEntity teacherOpt = (TeacherEntity) teacherRepository.findByEmail(email);
-        if (teacherOpt == null || !passwordEncoder.matches(password, teacherOpt.getPassword())) {
-            return "Invalid email or password";
+    
+        TeacherEntity teacher = teacherRepository.findByEmail(email);
+        Map<String, Object> response = new HashMap<>();
+    
+        if (teacher == null || !passwordEncoder.matches(password, teacher.getPassword())) {
+            response.put("status", "error");
+            response.put("message", "Invalid email or password");
+            return response;
         }
-        return "Login successful";
+    
+        // Optional: You can include a token or other details
+        response.put("status", "success");
+        response.put("message", "Login successful");
+        response.put("teacherId", teacher.getId());
+        response.put("teacherName", teacher.getName());
+        response.put("email", teacher.getEmail());
+    
+        return response;
     }
+    
     
     public Map<String,Object> sendOtp(String email) {
        TeacherEntity existingTeacher= (TeacherEntity) teacherRepository.findByEmail(email);

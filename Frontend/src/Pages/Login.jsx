@@ -9,7 +9,7 @@ export default function LoginForm() {
   const [form, setForm] = useState({
     email: '',
     password: '',
-    role: 'teacher' // Default role
+    role: 'teacher',
   });
 
   const handleChange = (e) => {
@@ -19,7 +19,6 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Save selected role in localStorage for future use (e.g., forgot password)
       localStorage.setItem('userRole', form.role);
 
       const endpoint =
@@ -38,8 +37,28 @@ export default function LoginForm() {
           withCredentials: true,
         }
       );
-      toast.success(response.data);
-      navigate('/home'); 
+
+      const resData = response.data;
+
+      if (resData.status === 'success') {
+        if (form.role === 'teacher') {
+          localStorage.setItem(
+            'teacher',
+            JSON.stringify({
+              teacherId: resData.teacherId,
+              teacherName: resData.teacherName,
+              email: resData.email,
+            })
+          );
+          toast.success(resData.message);
+          navigate('/teacherpanel');
+        } else {
+          toast.success(resData.message);
+          navigate('/home');
+        }
+      } else {
+        toast.error(resData.message || 'Login failed');
+      }
     } catch (err) {
       toast.error('Login failed. Please check your credentials.');
     }
@@ -62,7 +81,6 @@ export default function LoginForm() {
           </Link>
         </p>
         <form onSubmit={handleSubmit} className="space-y-5">
-
           {/* Role selection */}
           <div className="flex items-center justify-between gap-4">
             <label className="flex items-center gap-2">
@@ -118,7 +136,6 @@ export default function LoginForm() {
           </button>
         </form>
 
-        {/* Forgot Password */}
         <div className="mt-6 text-sm text-center text-gray-400 space-x-4">
           <button onClick={handleForgotPassword} className="hover:underline text-blue-400">
             Forgot password?

@@ -56,6 +56,7 @@ const UpdatePasswordForm = () => {
       setNewPassword("");
       setConfirmPassword("");
       localStorage.removeItem("userRole"); // Clean up
+      navigate('/Login');
     } catch (err) {
       const msg = err.response?.data?.message || "Something went wrong!";
       setError(msg);

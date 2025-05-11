@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CourseUploadForm = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +12,12 @@ const CourseUploadForm = () => {
     teacherName: '',
     image: null,
   });
+
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Get teacherId from localStorage
+  const teacherData = JSON.parse(localStorage.getItem('teacher'));
+  const teacherId = teacherData?.teacherId;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,186 +36,77 @@ const CourseUploadForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { courseName, description, fees, duration, teacherName, image } = formData;
+
+    if (!courseName || !description || !fees || !duration || !teacherName || !image) {
+      toast.error("Please fill in all fields and select an image.");
+      return;
+    }
+
+    if (!teacherId) {
+      toast.error("Teacher ID not found. Please log in again.");
+      return;
+    }
+
     const form = new FormData();
-    form.append('courseName', formData.courseName);
-    form.append('description', formData.description);
-    form.append('fees', formData.fees);
-    form.append('duration', formData.duration);
-    form.append('teacherName', formData.teacherName);
-    form.append('image', formData.image);
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key]);
+    });
 
     try {
-      const response = await axios.post('/api/courses', form, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      setLoading(true);
+      const res = await axios.post(
+        `http://localhost:8080/courset/add/${teacherId}`,
+        form,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      toast.success(res.data.message || "Course added successfully!");
+      setFormData({
+        courseName: '',
+        description: '',
+        fees: '',
+        duration: '',
+        teacherName: '',
+        image: null,
       });
-      alert('Course uploaded successfully!');
-      console.log(response.data);
     } catch (error) {
-      console.error('Upload error:', error);
-      alert('Failed to upload course.');
+      toast.error(error.response?.data?.message || "Failed to add course.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <style>{`
-        body {
-          margin: 0;
-        }
-
-        .animated-background {
-          min-height: 100vh;
-          background: linear-gradient(270deg,rgb(29, 6, 75),rgb(101, 3, 93),rgb(21, 2, 21));
-          background-size: 600% 600%;
-          animation: gradientAnimation 15s ease infinite;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 40px 0;
-        }
-
-        @keyframes gradientAnimation {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
-        .form-container {
-          max-width: 500px;
-          width: 100%;
-          margin: auto;
-          padding: 30px;
-          border-radius: 10px;
-          background-color: #444;
-          box-shadow: 0 0 15px rgba(0,0,0,0.4);
-          font-family: Arial, sans-serif;
-          color: white;
-        }
-
-        .form-container h2 {
-          text-align: center;
-          margin-bottom: 25px;
-          color: white;
-        }
-
-        .form-group {
-          margin-bottom: 18px;
-        }
-
-        .form-group label {
-          display: block;
-          margin-bottom: 6px;
-          font-weight: bold;
-          color: white;
-        }
-
-        .form-group input,
-        .form-group textarea {
-          width: 100%;
-          padding: 10px;
-          background-color: white;
-          border: 1px solid #ccc;
-          border-radius: 6px;
-          font-size: 14px;
-          color: black;
-        }
-
-        .form-group input[type="file"] {
-          padding: 3px;
-          background-color: white;
-        }
-
-        .submit-button {
-          width: 100%;
-          padding: 12px;
-          background-color: #00bfff;
-          color: white;
-          border: none;
-          border-radius: 6px;
-          font-size: 16px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-
-        .submit-button:hover {
-          background-color: #009acd;
-        }
-      `}</style>
-
-      <div className="animated-background">
-        <div className="form-container">
-          <h2>Upload Course</h2>
-          <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <div className="form-group">
-              <label>Course Name</label>
+    <div className="animated-background">
+      <div className="form-container">
+        <h2>Upload Course</h2>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          {['courseName', 'description', 'fees', 'duration', 'teacherName'].map((field) => (
+            <div className="form-group" key={field}>
+              <label>{field.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}</label>
               <input
-                type="text"
-                name="courseName"
-                value={formData.courseName}
+                type={field === 'fees' ? 'number' : 'text'}
+                name={field}
+                value={formData[field]}
                 onChange={handleChange}
                 required
               />
             </div>
-
-            <div className="form-group">
-              <label>Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows="4"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Fees</label>
-              <input
-                type="number"
-                name="fees"
-                value={formData.fees}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Duration</label>
-              <input
-                type="text"
-                name="duration"
-                value={formData.duration}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Teacher Name</label>
-              <input
-                type="text"
-                name="teacherName"
-                value={formData.teacherName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Course Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                required
-              />
-            </div>
-
-            <button type="submit" className="submit-button">Submit</button>
-          </form>
-        </div>
+          ))}
+          <div className="form-group">
+            <label>Course Image</label>
+            <input type="file" accept="image/*" onChange={handleFileChange} required />
+          </div>
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        </form>
+        <ToastContainer position="top-center" autoClose={3000} />
       </div>
     </div>
   );

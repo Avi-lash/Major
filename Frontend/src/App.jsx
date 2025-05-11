@@ -28,7 +28,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordForm />}/>
         <Route path="/signup" element={<SignupForm />}/>
         <Route path="/update-password" element={<UpdatePasswordForm />}/>
-        <Route path="/verifyotp" element={<VerifyOtpForm />}/>
+        <Route path="/verify-otp" element={<VerifyOtpForm />}/>
         <Route path="/Teacherpanel" element={<TeacherHomePanel />} />
         <Route path="/courseupload" element={<CourseUploadForm />} />
         <Route path="/viewcourse" element={<CourseControlPanel />} />

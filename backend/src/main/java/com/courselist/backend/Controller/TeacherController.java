@@ -50,15 +50,23 @@ public class TeacherController {
         public String password;
     }
 
+
     @PostMapping("/login")
-    public ResponseEntity<String> loginTeacher(@RequestBody LoginRequest request) {
-        try {
-            String result = teacherService.loginTeacher(request);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Login error: " + e.getMessage());
+public ResponseEntity<Map<String, Object>> loginTeacher(@RequestBody LoginRequest request) {
+    try {
+        Map<String, Object> result = teacherService.loginTeacher(request);
+        if ("error".equals(result.get("status"))) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
         }
+        return ResponseEntity.ok(result);
+    } catch (Exception e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", "error");
+        errorResponse.put("message", "Login error: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
+}
+
     @PostMapping("/forgot-password")    
     public ResponseEntity<Map<String,Object>> forgotPassword(@RequestBody Map<String, String> request) {
         try {
