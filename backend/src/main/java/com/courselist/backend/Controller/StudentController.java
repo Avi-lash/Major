@@ -49,16 +49,25 @@ public class StudentController {
         public String email;
         public String password;
     }
-
     @PostMapping("/login")
-    public ResponseEntity<String> loginStudent(@RequestBody LoginRequest request) {
-        try {
-            String result = studentService.loginStudent(request);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Login error: " + e.getMessage());
+public ResponseEntity<Map<String, Object>> loginStudent(@RequestBody LoginRequest request) {
+    try {
+        Map<String, Object> result = studentService.loginStudent(request);
+        String status = (String) result.get("status");
+
+        if ("error".equals(status)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
         }
+
+        return ResponseEntity.ok(result);
+    } catch (Exception e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", "error");
+        errorResponse.put("message", "Login error: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
+}
+
     @PostMapping("/forgot-password")    
     public ResponseEntity<Map<String,Object>> forgotPassword(@RequestBody Map<String, String> request) {
         try {

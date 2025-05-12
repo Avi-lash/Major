@@ -58,18 +58,28 @@ public class StudentServiceImp {
 
     }
 
-    public String loginStudent(StudentController.LoginRequest request) {
-        
+    public Map<String, Object> loginStudent(StudentController.LoginRequest request) {
         String email = request.email;
         String password = request.password;
-        StudentEntity studentOpt = studentRepository.findByEmail(email);
-        if (studentOpt == null || !passwordEncoder.matches(password, studentOpt.getPassword())) {
-            return "Invalid email or password";
+    
+        StudentEntity student = studentRepository.findByEmail(email);
+        Map<String, Object> response = new HashMap<>();
+    
+        if (student == null || !passwordEncoder.matches(password, student.getPassword())) {
+            response.put("status", "error");
+            response.put("message", "Invalid email or password");
+            return response;
         }
-        return "Login successful";
-
-
+    
+        response.put("status", "success");
+        response.put("message", "Login successful");
+        response.put("studentId", student.getId());
+        response.put("studentName", student.getName());
+        response.put("email", student.getEmail());
+    
+        return response;
     }
+    
 
     public Map<String, Object> sendOtp(String email) {
         

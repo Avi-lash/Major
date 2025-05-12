@@ -57,6 +57,10 @@ public class CourseEntity {
         this.imageData = imageData;
     }
     
+    public byte[] getImage() {
+        return this.imageData;
+    }
+
     
     
     

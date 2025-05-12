@@ -1,65 +1,109 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const CourseControlPanel = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [videoFile, setVideoFile] = useState(null);
-  const [docFile, setDocFile] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(null); // Track which dropdown is open
+  const [uploads, setUploads] = useState({}); // Track uploaded files per course
 
-  const handleVideoUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) setVideoFile(file);
+  const teacherData = JSON.parse(localStorage.getItem('teacher'));
+  const teacherId = teacherData?.teacherId;
+
+  useEffect(() => {
+    if (!teacherId) {
+      console.error('No teacherId in localStorage');
+      return;
+    }
+    axios
+      .get(`http://localhost:8080/courset/teacher/${teacherId}`, { withCredentials: true })
+      .then((res) => setCourses(res.data))
+      .catch((err) => console.error('Error fetching courses:', err));
+  }, [teacherId]);
+
+  const handleVideoUpload = (courseId, file) => {
+    setUploads(prev => ({
+      ...prev,
+      [courseId]: { ...prev[courseId], video: file }
+    }));
   };
 
-  const handleDocUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) setDocFile(file);
+  const handleDocUpload = (courseId, file) => {
+    setUploads(prev => ({
+      ...prev,
+      [courseId]: { ...prev[courseId], document: file }
+    }));
   };
 
   return (
     <div style={styles.wrapper}>
-      {/* Glowing Header */}
-      <h1 style={styles.glowingHeader}>Your Added Courses</h1>
+      <h1 style={styles.glowingHeader}>🎓 Your Added Courses</h1>
 
-      {/* Course Card */}
-      <div style={styles.topBar}>
-        <h2 style={styles.courseName}>Course Name: React Basics</h2>
-        <div style={styles.dropdownContainer}>
-          <button onClick={() => setDropdownOpen(!dropdownOpen)} style={styles.dropdownButton}>
-            ⋮
-          </button>
-          {dropdownOpen && (
-            <div style={styles.dropdownMenu}>
-              <label style={styles.dropdownItem}>
-                Upload Video
-                <input
-                  type="file"
-                  accept="video/*"
-                  style={styles.hiddenInput}
-                  onChange={handleVideoUpload}
-                />
-              </label>
-              <label style={styles.dropdownItem}>
-                Upload Assignment
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx,.txt"
-                  style={styles.hiddenInput}
-                  onChange={handleDocUpload}
-                />
-              </label>
-              <div style={styles.dropdownItem}>
-                View Student Details
-              </div>
+      {courses.length === 0 ? (
+        <p style={{ color: '#ccc' }}>No courses uploaded yet.</p>
+      ) : (
+        courses.map((course) => (
+          <div key={course.courseId} style={styles.card}>
+            <img
+              src={`http://localhost:8080/courset/image/${course.courseId}`}
+              alt={course.courseName}
+              style={styles.image}
+            />
+            <div style={styles.courseInfo}>
+              <h2 style={styles.courseName}>CourseName:{course.courseName}</h2>
+              <p>Description:{course.description}</p>
+              <p><strong>Duration:</strong> {course.duration}</p>
+              <p><strong>Fees:</strong> ₹{course.fees}</p>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Uploaded Info */}
-      <div style={styles.uploadInfo}>
-        {videoFile && <p>📹 Uploaded Video: {videoFile.name}</p>}
-        {docFile && <p>📄 Uploaded Document: {docFile.name}</p>}
-      </div>
+            <div style={styles.dropdownContainer}>
+              <button
+                onClick={() =>
+                  setDropdownOpen(dropdownOpen === course.courseId ? null : course.courseId)
+                }
+                style={styles.dropdownButton}
+              >
+                ⋮
+              </button>
+
+              {dropdownOpen === course.courseId && (
+                <div style={styles.dropdownMenu}>
+                  <label style={styles.dropdownItem}>
+                    Upload Video
+                    <input
+                      type="file"
+                      accept="video/*"
+                      style={styles.hiddenInput}
+                      onChange={(e) => handleVideoUpload(course.courseId, e.target.files[0])}
+                    />
+                  </label>
+                  <label style={styles.dropdownItem}>
+                    Upload Assignment
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx,.txt"
+                      style={styles.hiddenInput}
+                      onChange={(e) => handleDocUpload(course.courseId, e.target.files[0])}
+                    />
+                  </label>
+                  <div style={styles.dropdownItem}>
+                    View Student Details
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Uploaded file info */}
+            <div style={styles.uploadInfo}>
+              {uploads[course.courseId]?.video && (
+                <p>📹 Video: {uploads[course.courseId].video.name}</p>
+              )}
+              {uploads[course.courseId]?.document && (
+                <p>📄 Document: {uploads[course.courseId].document.name}</p>
+              )}
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };
@@ -68,7 +112,7 @@ const styles = {
   wrapper: {
     padding: '40px',
     fontFamily: 'Arial, sans-serif',
-    backgroundColor: '#000', // black background
+    backgroundColor: '#000',
     minHeight: '100vh',
     color: '#fff',
   },
@@ -76,52 +120,63 @@ const styles = {
     fontSize: '36px',
     color: '#0ff',
     textAlign: 'center',
-    marginBottom: '40px',
+    marginBottom: '30px',
     textShadow: '0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff',
   },
-  topBar: {
-    width: '100%',
-    backgroundColor: '#2f2f2f', // grey card
-    color: '#fff',
+  card: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: '10px',
+    marginBottom: '30px',
     padding: '20px',
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderRadius: '10px',
+    alignItems: 'flex-start',
+    position: 'relative',
+    boxShadow: '0 0 12px rgba(0, 255, 255, 0.2)',
+  },
+  image: {
+    width: '180px',
+    height: '140px',
+    objectFit: 'cover',
+    borderRadius: '8px',
+    marginRight: '20px',
+  },
+  courseInfo: {
+    flex: 1,
   },
   courseName: {
-    margin: 0,
-    fontSize: '24px',
+    margin: '0 0 10px 0',
+    fontSize: '22px',
     background: 'linear-gradient(to right, #00f0ff, #ff00f0)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
   },
   dropdownContainer: {
-    position: 'relative',
+    position: 'absolute',
+    top: '15px',
+    right: '15px',
   },
   dropdownButton: {
     background: 'none',
     border: 'none',
     color: '#fff',
-    fontSize: '28px',
+    fontSize: '24px',
     cursor: 'pointer',
   },
   dropdownMenu: {
     position: 'absolute',
-    top: '40px',
+    top: '35px',
     right: 0,
     backgroundColor: '#fff',
     color: '#000',
     border: '1px solid #ccc',
     borderRadius: '6px',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
     zIndex: 1,
-    minWidth: '200px',
+    minWidth: '180px',
     display: 'flex',
     flexDirection: 'column',
   },
   dropdownItem: {
-    padding: '12px 16px',
+    padding: '10px 14px',
     fontSize: '14px',
     borderBottom: '1px solid #eee',
     cursor: 'pointer',
@@ -132,9 +187,9 @@ const styles = {
     display: 'none',
   },
   uploadInfo: {
-    marginTop: '30px',
-    fontSize: '16px',
+    marginTop: '10px',
     color: '#ccc',
+    fontSize: '14px',
   },
 };
 

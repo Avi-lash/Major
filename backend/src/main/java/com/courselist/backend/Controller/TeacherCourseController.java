@@ -2,6 +2,7 @@ package com.courselist.backend.Controller;
 import com.courselist.backend.dbCLasses.CourseEntity;
 import com.courselist.backend.Service.CourseService;
 import com.courselist.backend.Service.TeacherCourseService;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -43,5 +44,21 @@ public class TeacherCourseController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error adding course: " + e.getMessage());
         }
+    }
+    @GetMapping("/teacher/{teacherId}")
+    public ResponseEntity<List<CourseEntity>> getCoursesByTeacher(@PathVariable Long teacherId) {
+        return ResponseEntity.ok(courseService.getCoursesByTeacher(teacherId));
+    }
+
+    @GetMapping("/image/{courseId}")
+    public ResponseEntity<byte[]> getCourseImage(@PathVariable Long courseId) {
+        byte[] image = courseService.getImageByCourseId(courseId);
+        if (image == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"course-image.jpg\"")
+                .body(image);
     }
 }

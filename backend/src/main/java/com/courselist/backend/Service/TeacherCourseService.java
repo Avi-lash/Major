@@ -1,4 +1,5 @@
 package com.courselist.backend.Service;
+import java.util.List;
 
 
 import com.courselist.backend.dbCLasses.CourseEntity;
@@ -22,5 +23,14 @@ public class TeacherCourseService {
                 .orElseThrow(() -> new RuntimeException("Teacher not found with ID: " + teacherId));
         course.setTeacher(teacher);
         return courseRepo.save(course);
+    }
+    public List<CourseEntity> getCoursesByTeacher(Long teacherId) {
+        return courseRepo.findByTeacherId(teacherId);
+    }
+
+    public byte[] getImageByCourseId(Long courseId) {
+        CourseEntity course = courseRepo.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        return course.getImage();
     }
 }
