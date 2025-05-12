@@ -1,65 +1,81 @@
-// package com.courselist.backend.Controller;
+package com.courselist.backend.Controller;
 
-// import java.util.ArrayList;
-// import java.util.HashMap;
-// import java.util.List;
-// import java.util.Map;
+import com.courselist.backend.Service.CourseService;
+import com.courselist.backend.dbCLasses.CourseEntity;
+import com.courselist.backend.dbCLasses.CourseDTO;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.CrossOrigin;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-// import com.courselist.backend.Service.CourseService;
-// import com.courselist.backend.dbCLasses.CourseEntity;
-// import com.courselist.backend.repository.CourseRepository;
+import java.util.*;
+import java.util.Base64;
+import java.util.stream.Collectors;
 
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RequestParam;
+@RestController
+@RequestMapping("/courses")
+@CrossOrigin(origins = "http://localhost:5173") // Update if frontend runs on different port
+public class CourseController {
 
+    @Autowired
+    private CourseService courseService;
 
-// @RequestMapping("/course")
-// @RestController
-// @CrossOrigin(origins="http://localhost:5173", allowCredentials = "true")
-// public class CourseController {
-//     @Autowired
-//     CourseService cs;
-//     @Autowired
-//     CourseRepository cr;
-//     @PostMapping("/add")
-//     public ResponseEntity<String> AddCourse(@RequestBody CourseEntity course) {
-//         //TODO: process POST request
-//         try {
-//             String response=cs.addCourse(course);
-//             return ResponseEntity.ok(response);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> addCourse(
+            @RequestParam String courseName,
+            @RequestParam String description,
+            @RequestParam Double fees,
+            @RequestParam String duration,
+            @RequestParam String teacherName,
+            @RequestParam MultipartFile image
+    ) {
+        try {
+            CourseEntity course = new CourseEntity();
+            course.setCourseName(courseName);
+            course.setDescription(description);
+            course.setFees(fees);
+            course.setDuration(duration);
+            course.setTeacherName(teacherName);
+            course.setImageData(image.getBytes());
 
-//         } catch (Exception e) {
-//             // TODO: handle exception
-//             return ResponseEntity.status(500).body("Error");
-//         }
-  
-//     }
-//     @GetMapping("/getcourse")
-//     public ResponseEntity<List<Map<String,Object>>> ShowCourse() {
-//         List<Courses> courses=cr.findAll();
-//         List<Map<String, Object>> courseList = new ArrayList<>();
-//          for (Courses course : courses) {
-//         Map<String, Object> courseMap = new HashMap<>();
-//         courseMap.put("id", course.getId());
-//         courseMap.put("courseName", course.getCourseName());
-//         courseMap.put("courseFees", course.getCourseFees());
-//         courseMap.put("timeRequired", course.getTimeRequired());
-//         courseMap.put("teacherName", course.getTeacherName());
-//         courseMap.put("rating", course.getRating());
+            String result = courseService.addCourse(course);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add course");
+        }
+    }
 
-//         courseList.add(courseMap);
-//     }
-//     return ResponseEntity.ok(courseList);
+    @GetMapping
+    public ResponseEntity<List<CourseDTO>> getAllCourses() {
+        List<CourseDTO> dtos = courseService.getAllCourses().stream()
+                .map(CourseDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
 
-//     }
-    
-// }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> getCourseById(@PathVariable Long id) {
+        try {
+            Optional<CourseEntity> course = courseService.findById(id);
+            if (course.isPresent()) {
+                CourseEntity c = course.get();
+                Map<String, Object> data = new HashMap<>();
+                data.put("courseId", c.getCourseId());
+                data.put("courseName", c.getCourseName());
+                data.put("description", c.getDescription());
+                data.put("fees", c.getFees());
+                data.put("duration", c.getDuration());
+                data.put("teacherName", c.getTeacherName());
+                data.put("imageBase64", Base64.getEncoder().encodeToString(c.getImageData()));
+                return ResponseEntity.ok(data);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("status", "error", "message", "Course not found"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("status", "error", "message", e.getMessage()));
+        }
+    }
+}

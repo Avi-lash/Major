@@ -12,6 +12,7 @@ import VerifyOtpForm from './Pages/VerifyOtpForm'
 import TeacherHomePanel from './Pages/Teacherpanel';
 import CourseUploadForm from './Pages/addcourse';
 import CourseControlPanel from './Pages/viewcourse';
+import ShowCourses from './Pages/ShowCourses';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/Teacherpanel" element={<TeacherHomePanel />} />
         <Route path="/courseupload" element={<CourseUploadForm />} />
         <Route path="/viewcourse" element={<CourseControlPanel />} />
+        <Route path="/showcourse" element={<ShowCourses />} />
      </Routes>
     </Router>
   );
