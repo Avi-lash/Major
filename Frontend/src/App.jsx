@@ -15,6 +15,9 @@ import CourseControlPanel from './Pages/viewcourse';
 import ShowCourses from './Pages/ShowCourses';
 import StudentProfile from './Pages/StudentProfile';
 
+import Admin from './Pages/Admin'
+
+
 function App() {
   return (
     <Router>
@@ -26,7 +29,7 @@ function App() {
         <Route path="/course" element={<Course />} />
         <Route path="/courselist" element={<ShowCourse />} />
         <Route path="/quiz" element={<Quiz />} /> {/* ✅ Dynamic ID passed */}
-        <Route path="/login" element={<LoginForm /> }/>
+        <Route path="/" element={<LoginForm /> }/>
         <Route path="/forgot-password" element={<ForgotPasswordForm />}/>
         <Route path="/signup" element={<SignupForm />}/>
         <Route path="/update-password" element={<UpdatePasswordForm />}/>
@@ -36,6 +39,9 @@ function App() {
         <Route path="/viewcourse" element={<CourseControlPanel />} />
         <Route path="/showcourse" element={<ShowCourses />} />
        <Route path="/student/:studentId" element={<StudentProfile />} />
+
+        <Route path="/verifyotp" element={<VerifyOtpForm />}/>
+        <Route path="/admin" element={<Admin />} />
 
      </Routes>
     </Router>

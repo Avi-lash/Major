@@ -144,3 +144,8 @@
   cursor: pointer;
   accent-color: #6366f1; /* Purple accent for slider */
 }
+
+h3
+{
+  color: #e5e7eb;
+}
