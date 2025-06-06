@@ -13,6 +13,7 @@ import TeacherHomePanel from './Pages/Teacherpanel';
 import CourseUploadForm from './Pages/addcourse';
 import CourseControlPanel from './Pages/viewcourse';
 import ShowCourses from './Pages/ShowCourses';
+import StudentProfile from './Pages/StudentProfile';
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
         <Route path="/courseupload" element={<CourseUploadForm />} />
         <Route path="/viewcourse" element={<CourseControlPanel />} />
         <Route path="/showcourse" element={<ShowCourses />} />
+       <Route path="/student/:studentId" element={<StudentProfile />} />
+
      </Routes>
     </Router>
   );

@@ -36,11 +36,11 @@ const ShowCourses = () => {
           alt={courseDetails.courseName}
           className="w-full h-64 object-cover rounded mb-4"
         />
-        <h1 className="text-3xl font-bold mb-2">{courseDetails.courseName}</h1>
+        <h1 className="text-3xl font-bold mb-2  text-gray-700">{courseDetails.courseName}</h1>
         <p className="mb-4 text-gray-700">{courseDetails.description}</p>
-        <p><strong>Fees:</strong> ₹{courseDetails.fees}</p>
-        <p><strong>Duration:</strong> {courseDetails.duration}</p>
-        <p><strong>Teacher:</strong> {courseDetails.teacherName}</p>
+        <p className="mb-4 text-gray-700"><strong>Fees:</strong> ₹{courseDetails.fees}</p>
+        <p className="mb-4 text-gray-700"><strong>Duration:</strong> {courseDetails.duration}</p>
+        <p className="mb-4 text-gray-700"><strong>Teacher:</strong> {courseDetails.teacherName}</p>
         <div className="mt-6 flex gap-4">
           <button
             onClick={handleBookNow}

@@ -132,5 +132,10 @@ public class StudentServiceImp {
  return "error= " + e;
 }
     }
+
+     public StudentEntity getStudentById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+    }
     
 }
