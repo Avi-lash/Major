@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const TeacherHomePanel = () => {
   const [showDropdown, setShowDropdown] = useState(false);
-  
+  const navigate = useNavigate();
+
   return (
     <div style={styles.body}>
       <style>
@@ -33,7 +34,12 @@ const TeacherHomePanel = () => {
         </div>
         {showDropdown && (
           <div style={styles.dropdown}>
-            <div style={styles.dropdownItem}>View Profile</div>
+            <div
+              style={styles.dropdownItem}
+              onClick={() => navigate('/teacherprofile')}
+            >
+              View Profile
+            </div>
             <div style={styles.dropdownItem}>Edit Profile</div>
             <div style={styles.dropdownItem}>Logout</div>
           </div>
@@ -53,7 +59,13 @@ const TeacherHomePanel = () => {
           <div className="animated-card" style={styles.card}>Doubts</div>
           <div className="animated-card" style={styles.card}>Student Details</div>
           <div className="animated-card" style={styles.card}>Feedbacks</div>
-          <div className="animated-card" style={styles.card}>Teacher Profile</div>
+          <div
+            className="animated-card"
+            style={styles.card}
+            onClick={() => navigate('/teacherprofile')}
+          >
+            Teacher Profile
+          </div>
         </div>
       </div>
     </div>

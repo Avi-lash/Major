@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const CourseControlPanel = () => {
   const [courses, setCourses] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(null); // Track which dropdown is open
-  const [uploads, setUploads] = useState({}); // Track uploaded files per course
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [uploads, setUploads] = useState({});
+  const navigate = useNavigate();
 
   const teacherData = JSON.parse(localStorage.getItem('teacher'));
   const teacherId = teacherData?.teacherId;
@@ -14,6 +16,7 @@ const CourseControlPanel = () => {
       console.error('No teacherId in localStorage');
       return;
     }
+
     axios
       .get(`http://localhost:8080/courset/teacher/${teacherId}`, { withCredentials: true })
       .then((res) => setCourses(res.data))
@@ -21,17 +24,22 @@ const CourseControlPanel = () => {
   }, [teacherId]);
 
   const handleVideoUpload = (courseId, file) => {
-    setUploads(prev => ({
+    setUploads((prev) => ({
       ...prev,
-      [courseId]: { ...prev[courseId], video: file }
+      [courseId]: { ...prev[courseId], video: file },
     }));
   };
 
   const handleDocUpload = (courseId, file) => {
-    setUploads(prev => ({
+    setUploads((prev) => ({
       ...prev,
-      [courseId]: { ...prev[courseId], document: file }
+      [courseId]: { ...prev[courseId], document: file },
     }));
+  };
+
+  const handleUploadClick = (courseId) => {
+    navigate('/detailsupload', { state: { courseId } });
+    setDropdownOpen(null);
   };
 
   return (
@@ -49,8 +57,8 @@ const CourseControlPanel = () => {
               style={styles.image}
             />
             <div style={styles.courseInfo}>
-              <h2 style={styles.courseName}>CourseName:{course.courseName}</h2>
-              <p>Description:{course.description}</p>
+              <h2 style={styles.courseName}>Course Name: {course.courseName}</h2>
+              <p>Description: {course.description}</p>
               <p><strong>Duration:</strong> {course.duration}</p>
               <p><strong>Fees:</strong> ₹{course.fees}</p>
             </div>
@@ -85,14 +93,17 @@ const CourseControlPanel = () => {
                       onChange={(e) => handleDocUpload(course.courseId, e.target.files[0])}
                     />
                   </label>
-                  <div style={styles.dropdownItem}>
-                    View Student Details
+                  <div
+                    style={styles.dropdownItem}
+                    onClick={() => handleUploadClick(course.courseId)}
+                  >
+                    Upload Details
                   </div>
+                  <div style={styles.dropdownItem}>View Student Details</div>
                 </div>
               )}
             </div>
 
-            {/* Uploaded file info */}
             <div style={styles.uploadInfo}>
               {uploads[course.courseId]?.video && (
                 <p>📹 Video: {uploads[course.courseId].video.name}</p>
