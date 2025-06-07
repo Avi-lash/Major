@@ -17,7 +17,7 @@ function LearningPage() {
   const [answers, setAnswers] = useState([]);
 
   // State to hold the video title extracted from the H2 tag
-  const [videoTitle, setVideoTitle] = useState("Doubly Linked List"); 
+  const [videoTitle, setVideoTitle] = useState("Sex"); 
   useEffect(() => {
      }, []); // Empty dependency array means this runs once on mount
 

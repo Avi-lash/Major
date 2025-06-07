@@ -17,52 +17,61 @@ export default function LoginForm() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      localStorage.setItem('userRole', form.role);
+  e.preventDefault();
+  try {
+    localStorage.setItem('userRole', form.role);
 
-      const endpoint =
-        form.role === 'teacher'
-          ? 'http://localhost:8080/teacher/login'
-          : 'http://localhost:8080/student/login';
+    const endpoint =
+      form.role === 'teacher'
+        ? 'http://localhost:8080/teacher/login'
+        : 'http://localhost:8080/student/login';
 
-      const response = await axios.post(
-        endpoint,
-        {
-          email: form.email,
-          password: form.password,
-        },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        }
-      );
-
-      const resData = response.data;
-
-      if (resData.status === 'success') {
-        if (form.role === 'teacher') {
-          localStorage.setItem(
-            'teacher',
-            JSON.stringify({
-              teacherId: resData.teacherId,
-              teacherName: resData.teacherName,
-              email: resData.email,
-            })
-          );
-          toast.success(resData.message);
-          navigate('/teacherpanel');
-        } else {
-          toast.success(resData.message);
-          navigate('/home');
-        }
-      } else {
-        toast.error(resData.message || 'Login failed');
+    const response = await axios.post(
+      endpoint,
+      {
+        email: form.email,
+        password: form.password,
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
       }
-    } catch (err) {
-      toast.error('Login failed. Please check your credentials.');
+    );
+
+    const resData = response.data;
+
+    if (resData.status === 'success') {
+      if (form.role === 'teacher') {
+        localStorage.setItem(
+          'teacher',
+          JSON.stringify({
+            teacherId: resData.teacherId,
+            teacherName: resData.teacherName,
+            email: resData.email,
+          })
+        );
+        toast.success(resData.message);
+        navigate('/teacherpanel');
+      } else {
+        localStorage.setItem(
+          'student',
+          JSON.stringify({
+            studentId: resData.studentId,
+            studentName: resData.studentName,
+            email: resData.email,
+          })
+        );
+        toast.success(resData.message);
+        navigate('/home');
+      }
+    } else {
+      toast.error(resData.message || 'Login failed');
     }
-  };
+  } catch (err) {
+    toast.error('Login failed. Please check your credentials.');
+  }
+};
+
 
   const handleForgotPassword = () => {
     localStorage.setItem('userRole', form.role);

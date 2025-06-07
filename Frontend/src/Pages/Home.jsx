@@ -108,7 +108,7 @@ const Home = () => {
           </h1>
           <br />
           <br />
-          <Link to="/courses" className="cta-button">
+          <Link to="/showcourse" className="cta-button">
             <span className="bold-text">Ultimate</span> programming mastery →
           </Link>
         </div>

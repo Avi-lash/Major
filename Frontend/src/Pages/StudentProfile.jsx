@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const StudentProfile = () => {
   const { studentId } = useParams();
+  const navigate = useNavigate();
   const [student, setStudent] = useState(null);
 
   useEffect(() => {
@@ -21,6 +22,19 @@ const StudentProfile = () => {
     );
   }
 
+  // Handler for the My Courses button
+  const handleMyCourses = () => {
+    navigate(`/mycourse/${studentId}`);
+  };
+
+  // Logout handler
+  const handleLogout = () => {
+    // Clear any auth tokens or user data stored
+    localStorage.clear(); // or sessionStorage.clear()
+    // Redirect to login or home page
+    navigate('/login');  // change '/login' to your actual login route
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-indigo-100">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
@@ -30,6 +44,20 @@ const StudentProfile = () => {
           <p><span className="font-semibold">Email:</span> {student.email}</p>
           <p><span className="font-semibold">Phone:</span> {student.phnno}</p>
         </div>
+
+        <button
+          onClick={handleMyCourses}
+          className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition"
+        >
+          My Courses
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className="mt-4 w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold transition"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );

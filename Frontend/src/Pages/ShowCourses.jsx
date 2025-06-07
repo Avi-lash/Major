@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ShowCourses = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [courseDetails, setCourseDetails] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch all courses
   useEffect(() => {
@@ -22,12 +24,12 @@ const ShowCourses = () => {
     }
   }, [selectedCourseId]);
 
-  // Book Now Handler
+  // Book Now Handler - redirect to PayMethod page with course details
   const handleBookNow = () => {
-    alert(`Course Booked: ${courseDetails.courseName}`);
+    navigate('/paymethod', { state: { course: courseDetails } });
   };
 
-  // === SHOW DETAILS PAGE ===
+  // Show course details page
   if (courseDetails) {
     return (
       <div className="p-6 max-w-2xl mx-auto bg-white shadow-lg rounded">
@@ -36,11 +38,11 @@ const ShowCourses = () => {
           alt={courseDetails.courseName}
           className="w-full h-64 object-cover rounded mb-4"
         />
-        <h1 className="text-3xl font-bold mb-2  text-gray-700">{courseDetails.courseName}</h1>
-        <p className="mb-4 text-gray-700">{courseDetails.description}</p>
-        <p className="mb-4 text-gray-700"><strong>Fees:</strong> ₹{courseDetails.fees}</p>
-        <p className="mb-4 text-gray-700"><strong>Duration:</strong> {courseDetails.duration}</p>
-        <p className="mb-4 text-gray-700"><strong>Teacher:</strong> {courseDetails.teacherName}</p>
+        <h1 className="text-3xl font-bold mb-2 text-black">{courseDetails.courseName}</h1>
+        <p className="mb-4 text-black">{courseDetails.description}</p>
+        <p className="mb-4 text-black"><strong>Fees:</strong> ₹{courseDetails.fees}</p>
+        <p className="mb-4 text-black"><strong>Duration:</strong> {courseDetails.duration}</p>
+        <p className="mb-4 text-black"><strong>Teacher:</strong> {courseDetails.teacherName}</p>
         <div className="mt-6 flex gap-4">
           <button
             onClick={handleBookNow}
@@ -62,7 +64,7 @@ const ShowCourses = () => {
     );
   }
 
-  //  SHOW LIST PAGE 
+  // Show courses list page
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6">
       {courses.map((course) => (
@@ -72,8 +74,8 @@ const ShowCourses = () => {
             alt={course.courseName}
             className="w-full h-40 object-cover mb-2 rounded"
           />
-          <h2 className="text-xl font-semibold">{course.courseName}</h2>
-          <p className="text-gray-600 text-sm mb-2">
+          <h2 className="text-xl font-semibold text-black">{course.courseName}</h2>
+          <p className="text-black text-sm mb-2">
             {course.description.slice(0, 80)}...
           </p>
           <button

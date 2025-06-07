@@ -18,6 +18,11 @@ import StudentProfile from './Pages/StudentProfile';
 import Admin from './Pages/Admin';
 import CourseDetailsUploadForm from './Pages/CourseDetailsUploadForm';
 import TeacherProfile from './Pages/TeacherProfile';
+import PayMethod from './Pages/PayMethod';
+import Pay1 from './Pages/Pay1';
+import Pay2 from './Pages/Pay2';
+import Mycourse from './Pages/Mycourse';
+
 
 // Components
 import Navbar from './assets/components/Navbar';
@@ -48,6 +53,11 @@ const App = () => {
         <Route path="/detailsupload" element={<CourseDetailsUploadForm />} />
         <Route path="/teacherprofile" element={<TeacherProfile />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/paymethod" element={<PayMethod />} />
+        <Route path="/pay1" element={<Pay1 />} />
+        <Route path="/pay2" element={<Pay2 />} />
+        <Route path="/mycourse/:studentId" element={<Mycourse />} />
+
       </Routes>
     </Router>
   );
