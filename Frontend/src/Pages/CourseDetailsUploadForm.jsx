@@ -16,82 +16,48 @@ const CourseDetailsUploadForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // You can now use formData.video and formData.assignment to send data to backend
     console.log("Video File:", formData.video);
     console.log("Assignment File:", formData.assignment);
     alert("Files submitted successfully!");
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.heading}>Upload Course Details</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <label style={styles.label}>Upload Course Video:</label>
-        <input
-          type="file"
-          name="video"
-          accept="video/*"
-          onChange={handleChange}
-          style={styles.input}
-        />
+    <div className="max-w-md mx-auto mt-16 p-8 bg-black rounded-xl shadow-xl text-white">
+      <h2 className="text-2xl font-bold text-center mb-6">Upload Course Details</h2>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div>
+          <label className="block mb-2 font-semibold">Upload Course Video:</label>
+          <input
+            type="file"
+            name="video"
+            accept="video/*"
+            onChange={handleChange}
+            className="w-full p-2 rounded-md border border-gray-600 bg-gray-900 text-gray-300 file:text-white file:bg-purple-700 file:border-none file:px-4 file:py-2 file:rounded file:cursor-pointer"
+          />
+        </div>
 
-        <label style={styles.label}>Upload Assignment Document:</label>
-        <input
-          type="file"
-          name="assignment"
-          accept=".pdf,.doc,.docx,.txt"
-          onChange={handleChange}
-          style={styles.input}
-        />
+        <div>
+          <label className="block mb-2 font-semibold">Upload Assignment Document:</label>
+          <input
+            type="file"
+            name="assignment"
+            accept=".pdf,.doc,.docx,.txt"
+            onChange={handleChange}
+            className="w-full p-2 rounded-md border border-gray-600 bg-gray-900 text-gray-300 file:text-white file:bg-purple-700 file:border-none file:px-4 file:py-2 file:rounded file:cursor-pointer"
+          />
+        </div>
 
-        <button type="submit" style={styles.button}>Submit</button>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-bold rounded-md hover:opacity-90 transition-opacity"
+          >
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );
 };
 
-// Internal CSS
-const styles = {
-  container: {
-    maxWidth: "400px",
-    margin: "50px auto",
-    padding: "30px",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "12px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-    fontFamily: "Arial, sans-serif",
-  },
-  heading: {
-    textAlign: "center",
-    marginBottom: "20px",
-    color: "#333",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  label: {
-    marginBottom: "8px",
-    fontWeight: "bold",
-    color: "#444",
-  },
-  input: {
-    marginBottom: "20px",
-    padding: "10px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-  },
-  button: {
-    padding: "12px",
-    backgroundColor: "#4CAF50",
-    color: "white",
-    fontWeight: "bold",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    transition: "background 0.3s ease",
-  }
-};
-
 export default CourseDetailsUploadForm;
-

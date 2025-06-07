@@ -75,24 +75,9 @@ const CourseControlPanel = () => {
 
               {dropdownOpen === course.courseId && (
                 <div style={styles.dropdownMenu}>
-                  <label style={styles.dropdownItem}>
-                    Upload Video
-                    <input
-                      type="file"
-                      accept="video/*"
-                      style={styles.hiddenInput}
-                      onChange={(e) => handleVideoUpload(course.courseId, e.target.files[0])}
-                    />
-                  </label>
-                  <label style={styles.dropdownItem}>
-                    Upload Assignment
-                    <input
-                      type="file"
-                      accept=".pdf,.doc,.docx,.txt"
-                      style={styles.hiddenInput}
-                      onChange={(e) => handleDocUpload(course.courseId, e.target.files[0])}
-                    />
-                  </label>
+                  
+                  
+                
                   <div
                     style={styles.dropdownItem}
                     onClick={() => handleUploadClick(course.courseId)}

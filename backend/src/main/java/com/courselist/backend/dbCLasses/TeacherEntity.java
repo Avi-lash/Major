@@ -63,6 +63,10 @@ public class TeacherEntity {
         return this.name;
     }
 
+    public String getPhnno() {
+        return this.phnno;
+    }
+
     
 
 }

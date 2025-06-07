@@ -96,6 +96,23 @@ public class TeacherServiceImp  {
    
 
 }
+public Map<String, String> getTeacherById(Long id) {
+    Optional<TeacherEntity> optionalTeacher = teacherRepository.findById(id);
+    Map<String, String> response = new HashMap<>();
+
+    if (optionalTeacher.isPresent()) {
+        TeacherEntity teacher = optionalTeacher.get();
+        response.put("name", teacher.getName());
+        response.put("email", teacher.getEmail());
+        response.put("phnno", teacher.getPhnno());
+    } else {
+        response.put("error", "Teacher not found");
+    }
+
+    return response;
+}
+
+
 private String generateOtp() {
     int otpValue = (int)(Math.random() * 900000) + 100000;
     return String.valueOf(otpValue);

@@ -22,6 +22,7 @@ public class CourseDTO {
         this.teacherName = entity.getTeacherName();
         this.imageBase64 = Base64.getEncoder().encodeToString(entity.getImageData());
     }
+    
 
-
+    
 }

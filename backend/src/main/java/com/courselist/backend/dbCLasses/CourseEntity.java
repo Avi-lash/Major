@@ -61,7 +61,18 @@ public class CourseEntity {
         return this.imageData;
     }
 
+    public Long getCourseId() { return courseId; }
+    public void setCourseId(Long courseId) { this.courseId = courseId; }
+
+    public String getCourseName() { return courseName; }
+    public String getDescription() { return description; }
+    public Double getFees() { return fees; }
+    public String getDuration() { return duration; }
+    public String getTeacherName() { return teacherName; }
+    public byte[] getImageData() { return imageData; }
+
     
-    
+
+ 
     
 }
