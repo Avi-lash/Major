@@ -36,7 +36,7 @@ const EditProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:8080/teacher/${teacherId}`, teacher, {
+    axios.put(`http://localhost:8080/teacher/update/${teacherId}`, teacher, {
       withCredentials: true
     })
       .then((res) => {

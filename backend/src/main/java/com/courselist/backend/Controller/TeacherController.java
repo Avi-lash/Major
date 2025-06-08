@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.courselist.backend.Service.TeacherServiceImp;
 import com.courselist.backend.dbCLasses.TeacherEntity;
-
+import org.springframework.web.bind.annotation.CrossOrigin.*;
 @RestController
 @RequestMapping("/teacher")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173/",allowCredentials="true")
 public class TeacherController {
 
     @Autowired
@@ -22,8 +22,10 @@ public class TeacherController {
     }
 
     @PostMapping("/login")
-    public Map<String, Object> loginTeacher(@RequestBody LoginRequest request) {
-        return teacherService.loginTeacher(request);
+    public Map<String, Object> loginTeacher(@RequestBody Map<String,Object> request) {
+        System.out.println(request);
+         return teacherService.loginTeacher(request);
+        
     }
 
     @PostMapping("/send-otp")

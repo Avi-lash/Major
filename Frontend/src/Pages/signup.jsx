@@ -53,8 +53,8 @@ export default function SignupForm() {
     try {
       const endpoint =
         form.role === 'teacher'
-          ? 'http://localhost:8080/teacher/create'
-          : 'http://localhost:8080/student/create';
+          ? 'http://localhost:8080/teacher/register'
+          : 'http://localhost:8080/student/register';
 
       await axios.post(
         endpoint,

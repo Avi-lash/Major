@@ -36,34 +36,35 @@ public class TeacherServiceImp {
         return "Saved Successfully";
     }
 
-    public Map<String, Object> loginTeacher(TeacherController.LoginRequest request) {
-        String email = request.email;
-        String password = request.password;
-    
-        Optional<TeacherEntity> optionalTeacher = teacherRepository.findByEmail(email);
-        Map<String, Object> response = new HashMap<>();
-    
-        if (optionalTeacher.isEmpty() || !passwordEncoder.matches(password, optionalTeacher.get().getPassword())) {
-            response.put("status", "error");
-            response.put("message", "Invalid email or password");
-            return response;
-        }
+    public Map<String, Object> loginTeacher(Map<String, Object> request) {
+    String email = (String) request.get("email");
+    String password = (String) request.get("password");
+    System.out.println(email + " " + password);
 
-        TeacherEntity teacher = optionalTeacher.get();
-        response.put("status", "success");
-        response.put("message", "Login successful");
-        response.put("teacherId", teacher.getId());
-        response.put("teacherName", teacher.getName());
-        response.put("email", teacher.getEmail());
-    
+    TeacherEntity teacher = teacherRepository.findByEmail(email);  // Returns null if not found
+    Map<String, Object> response = new HashMap<>();
+
+    if (teacher == null || !passwordEncoder.matches(password, teacher.getPassword())) {
+        response.put("status", "error");
+        response.put("message", "Invalid email or password");
         return response;
     }
+
+    response.put("status", "success");
+    response.put("message", "Login successful");
+    response.put("teacherId", teacher.getId());
+    response.put("teacherName", teacher.getName());
+    response.put("email", teacher.getEmail());
+
+    return response;
+}
+
     
     public Map<String, Object> sendOtp(String email) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Optional<TeacherEntity> existingTeacherOpt = teacherRepository.findByEmail(email);
-            if (existingTeacherOpt.isPresent()) {
+            TeacherEntity existingTeacherOpt = teacherRepository.findByEmail(email);
+            if (existingTeacherOpt!=null) {
                 String otp = generateOtp();
                 emailservice.sendEmail(email, "Password Recovery", "Your otp is: " + otp);
                 String token = jwtUtil.generateOtpToken(email, otp, 360);
@@ -104,12 +105,12 @@ public class TeacherServiceImp {
 
     public String updatePassword(String email, String password) {
         try {
-            Optional<TeacherEntity> existingTeacherOpt = teacherRepository.findByEmail(email);
-            if (existingTeacherOpt.isPresent()) {
-                TeacherEntity existingTeacher = existingTeacherOpt.get();
+            TeacherEntity existingTeacherOpt = teacherRepository.findByEmail(email);
+            if (existingTeacherOpt!=null) {
+                // TeacherEntity existingTeacher = existingTeacherOpt.get();
                 String hashpassword = passwordEncoder.encode(password);
-                existingTeacher.setPassword(hashpassword);
-                teacherRepository.save(existingTeacher);
+                existingTeacherOpt.setPassword(hashpassword);
+                teacherRepository.save(existingTeacherOpt);
                 return "password updated successfully";
             } else {
                 return "password update failed!!!";

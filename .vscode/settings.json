@@ -11,10 +11,9 @@
             "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "MajorDB",
-            "database": "MajorDB",
-            "username": "root",
-            "password": "Avilash2"
+            "name": "Project",
+            "database": "major",
+            "username": "root"
         }
     ]
 }

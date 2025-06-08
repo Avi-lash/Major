@@ -4,9 +4,10 @@ import axios from 'axios';
 
 const CourseControlPanel = () => {
   const [courses, setCourses] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [, setDropdownOpen] = useState(null);
   const [uploads, setUploads] = useState({});
   const navigate = useNavigate();
+  const [dropdownStates, setDropdownStates] = useState({});
 
   const teacherData = JSON.parse(localStorage.getItem('teacher'));
   const teacherId = teacherData?.teacherId;
@@ -57,10 +58,11 @@ const CourseControlPanel = () => {
         courses.map((course) => (
           <div key={course.courseId} style={styles.card}>
             <img
-              src={`http://localhost:8080/courset/image/${course.courseId}`}
-              alt={course.courseName}
-              style={styles.image}
-            />
+                src={`data:image/jpeg;base64,${course.image}`}
+                alt={course.courseName}
+                style={styles.image}
+              />
+
             <div style={styles.courseInfo}>
               <h2 style={styles.courseName}>Course Name: {course.courseName}</h2>
               <p>Description: {course.description}</p>
@@ -68,33 +70,54 @@ const CourseControlPanel = () => {
               <p><strong>Fees:</strong> ₹{course.fees}</p>
             </div>
 
-            <div style={styles.dropdownContainer}>
-              <button
-                onClick={() =>
-                  setDropdownOpen(dropdownOpen === course.courseId ? null : course.courseId)
-                }
-                style={styles.dropdownButton}
-              >
-                ⋮
-              </button>
+           <div style={styles.dropdownContainer}>
+  <button
+  onClick={() => {
+    setDropdownStates((prev) => {
+      const isOpen = !!prev[course.courseId];
+      if (isOpen) {
+        // Close the dropdown if it was open
+        return { ...prev, [course.courseId]: false };
+      } else {
+        // Open only this dropdown and close others
+        return { [course.courseId]: true };
+      }
+    });
+  }}
+  style={styles.dropdownButton}
+>
+  ⋮
+</button>
 
-              {dropdownOpen === course.courseId && (
-                <div style={styles.dropdownMenu}>
-                  <div
-                    style={styles.dropdownItem}
-                    onClick={() => handleUploadClick(course.courseId)}
-                  >
-                    Upload Details
-                  </div>
-                  <div
-                    style={styles.dropdownItem}
-                    onClick={() => handleViewStudentsClick(course.courseId)}
-                  >
-                    View Student Details
-                  </div>
-                </div>
-              )}
-            </div>
+
+
+
+  {dropdownStates[course.courseId] && (
+  <div style={styles.dropdownMenu}>
+    <div
+      style={styles.dropdownItem}
+      onClick={() => {
+        handleUploadClick(course.courseId);
+        setDropdownStates((prev) => ({ ...prev, [course.courseId]: false }));
+      }}
+    >
+      Upload Details
+    </div>
+    <div
+      style={styles.dropdownItem}
+      onClick={() => {
+        handleViewStudentsClick(course.courseId);
+        setDropdownStates((prev) => ({ ...prev, [course.courseId]: false }));
+      }}
+    >
+      View Student Details
+    </div>
+  </div>
+)}
+
+</div>
+
+
 
             <div style={styles.uploadInfo}>
               {uploads[course.courseId]?.video && (
