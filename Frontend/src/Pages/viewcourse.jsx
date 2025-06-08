@@ -1,51 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const CourseControlPanel = () => {
   const [courses, setCourses] = useState([]);
-  const [, setDropdownOpen] = useState(null);
-  const [uploads, setUploads] = useState({});
+  const [openDropdownId, setOpenDropdownId] = useState(null);
   const navigate = useNavigate();
-  const [dropdownStates, setDropdownStates] = useState({});
+  const dropdownRefs = useRef({});
 
   const teacherData = JSON.parse(localStorage.getItem('teacher'));
   const teacherId = teacherData?.teacherId;
 
   useEffect(() => {
-    if (!teacherId) {
-      console.error('No teacherId in localStorage');
-      return;
-    }
-
+    if (!teacherId) return;
     axios
       .get(`http://localhost:8080/courset/teacher/${teacherId}`, { withCredentials: true })
       .then((res) => setCourses(res.data))
-      .catch((err) => console.error('Error fetching courses:', err));
+      .catch((err) => console.error(err));
   }, [teacherId]);
 
-  const handleVideoUpload = (courseId, file) => {
-    setUploads((prev) => ({
-      ...prev,
-      [courseId]: { ...prev[courseId], video: file },
-    }));
-  };
-
-  const handleDocUpload = (courseId, file) => {
-    setUploads((prev) => ({
-      ...prev,
-      [courseId]: { ...prev[courseId], document: file },
-    }));
-  };
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const isOutside = Object.values(dropdownRefs.current).every(
+        (ref) => ref && !ref.contains(e.target)
+      );
+      if (isOutside) setOpenDropdownId(null);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleUploadClick = (courseId) => {
     navigate('/detailsupload', { state: { courseId } });
-    setDropdownOpen(null);
+    setOpenDropdownId(null);
   };
 
   const handleViewStudentsClick = (courseId) => {
     navigate('/coursestudents', { state: { courseId } });
-    setDropdownOpen(null);
+    setOpenDropdownId(null);
   };
 
   return (
@@ -58,10 +51,10 @@ const CourseControlPanel = () => {
         courses.map((course) => (
           <div key={course.courseId} style={styles.card}>
             <img
-                src={`data:image/jpeg;base64,${course.image}`}
-                alt={course.courseName}
-                style={styles.image}
-              />
+              src={`data:image/jpeg;base64,${course.image}`}
+              alt={course.courseName}
+              style={styles.image}
+            />
 
             <div style={styles.courseInfo}>
               <h2 style={styles.courseName}>Course Name: {course.courseName}</h2>
@@ -70,61 +63,34 @@ const CourseControlPanel = () => {
               <p><strong>Fees:</strong> ₹{course.fees}</p>
             </div>
 
-           <div style={styles.dropdownContainer}>
-  <button
-  onClick={() => {
-    setDropdownStates((prev) => {
-      const isOpen = !!prev[course.courseId];
-      if (isOpen) {
-        // Close the dropdown if it was open
-        return { ...prev, [course.courseId]: false };
-      } else {
-        // Open only this dropdown and close others
-        return { [course.courseId]: true };
-      }
-    });
-  }}
-  style={styles.dropdownButton}
->
-  ⋮
-</button>
+            <div
+              style={styles.dropdownContainer}
+              ref={(el) => (dropdownRefs.current[course.courseId] = el)}
+            >
+              <button
+                onClick={() =>
+                  setOpenDropdownId((prev) => (prev === course.courseId ? null : course.courseId))
+                }
+                style={styles.dropdownButton}
+              >
+                ⋮
+              </button>
 
-
-
-
-  {dropdownStates[course.courseId] && (
-  <div style={styles.dropdownMenu}>
-    <div
-      style={styles.dropdownItem}
-      onClick={() => {
-        handleUploadClick(course.courseId);
-        setDropdownStates((prev) => ({ ...prev, [course.courseId]: false }));
-      }}
-    >
-      Upload Details
-    </div>
-    <div
-      style={styles.dropdownItem}
-      onClick={() => {
-        handleViewStudentsClick(course.courseId);
-        setDropdownStates((prev) => ({ ...prev, [course.courseId]: false }));
-      }}
-    >
-      View Student Details
-    </div>
-  </div>
-)}
-
-</div>
-
-
-
-            <div style={styles.uploadInfo}>
-              {uploads[course.courseId]?.video && (
-                <p>📹 Video: {uploads[course.courseId].video.name}</p>
-              )}
-              {uploads[course.courseId]?.document && (
-                <p>📄 Document: {uploads[course.courseId].document.name}</p>
+              {openDropdownId === course.courseId && (
+                <div style={styles.dropdownMenu}>
+                  <div
+                    style={styles.dropdownItem}
+                    onClick={() => handleUploadClick(course.courseId)}
+                  >
+                    Upload Details
+                  </div>
+                  <div
+                    style={styles.dropdownItem}
+                    onClick={() => handleViewStudentsClick(course.courseId)}
+                  >
+                    View Student Details
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -137,7 +103,6 @@ const CourseControlPanel = () => {
 const styles = {
   wrapper: {
     padding: '40px',
-    fontFamily: 'Arial, sans-serif',
     backgroundColor: '#000',
     minHeight: '100vh',
     color: '#fff',
@@ -147,7 +112,7 @@ const styles = {
     color: '#0ff',
     textAlign: 'center',
     marginBottom: '30px',
-    textShadow: '0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff',
+    textShadow: '0 0 10px #0ff, 0 0 20px #0ff',
   },
   card: {
     backgroundColor: '#1a1a1a',
@@ -180,12 +145,15 @@ const styles = {
     position: 'absolute',
     top: '15px',
     right: '15px',
+    zIndex: 10,
   },
   dropdownButton: {
     background: 'none',
-    border: 'none',
+    border: '2px solid white',
+    borderRadius: '6px',
     color: '#fff',
     fontSize: '24px',
+    padding: '2px 10px',
     cursor: 'pointer',
   },
   dropdownMenu: {
@@ -196,7 +164,6 @@ const styles = {
     color: '#000',
     border: '1px solid #ccc',
     borderRadius: '6px',
-    zIndex: 1,
     minWidth: '180px',
     display: 'flex',
     flexDirection: 'column',
@@ -207,15 +174,6 @@ const styles = {
     borderBottom: '1px solid #eee',
     cursor: 'pointer',
     textAlign: 'left',
-    position: 'relative',
-  },
-  hiddenInput: {
-    display: 'none',
-  },
-  uploadInfo: {
-    marginTop: '10px',
-    color: '#ccc',
-    fontSize: '14px',
   },
 };
 

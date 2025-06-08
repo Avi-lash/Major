@@ -33,7 +33,7 @@ public List<Map<String, Object>> getCustomCoursesByTeacher(Long teacherId) {
 
     for (Object[] row : rawData) {
         Map<String, Object> courseMap = new HashMap<>();
-        courseMap.put("id", row[0]);
+        courseMap.put("courseId", row[0]);
         courseMap.put("courseName", row[1]);
         courseMap.put("description", row[2]);
         courseMap.put("fees", row[3]);
