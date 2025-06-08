@@ -1,11 +1,13 @@
 package com.courselist.backend.Controller;
 
 import com.courselist.backend.Service.PurchasedPaymentService;
+import com.courselist.backend.dbCLasses.PurchasedPayment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/payment")
@@ -15,7 +17,7 @@ public class PurchasedPaymentController {
     @Autowired
     private PurchasedPaymentService paymentService;
 
-    // POST endpoint to confirm and store a payment
+    // ✅ Confirm and save a payment
     @PostMapping("/confirm")
     public ResponseEntity<?> confirmPayment(@RequestBody Map<String, Object> paymentData) {
         try {
@@ -35,16 +37,31 @@ public class PurchasedPaymentController {
         }
     }
 
-    // GET endpoint to retrieve all payments by a student's ID
+    // ✅ Get all purchased payments by user ID
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getPaymentsByUserId(@PathVariable Long userId) {
         try {
-            return ResponseEntity.ok(paymentService.getPaymentsByUserId(userId));
+            List<PurchasedPayment> payments = paymentService.getPaymentsByUserId(userId);
+            return ResponseEntity.ok(payments);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity
                     .badRequest()
                     .body(Map.of("error", "Error fetching purchased payments: " + e.getMessage()));
+        }
+    }
+
+    // ✅ Get all students (purchases) by course ID
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<?> getStudentsByCourseId(@PathVariable Long courseId) {
+        try {
+            List<PurchasedPayment> payments = paymentService.getPaymentsByCourseId(courseId);
+            return ResponseEntity.ok(payments);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("error", "Error fetching students for course: " + e.getMessage()));
         }
     }
 }

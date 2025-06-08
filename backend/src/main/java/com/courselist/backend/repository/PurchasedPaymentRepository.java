@@ -10,4 +10,7 @@ import java.util.List;
 @Repository
 public interface PurchasedPaymentRepository extends JpaRepository<PurchasedPayment, Long> {
     List<PurchasedPayment> findByStudent(StudentEntity student);
+
+    // ✅ NEW: Find all payments for a given course ID
+    List<PurchasedPayment> findByCourseId(Long courseId);
 }

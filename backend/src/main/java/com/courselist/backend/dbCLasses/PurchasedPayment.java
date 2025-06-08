@@ -1,6 +1,8 @@
 package com.courselist.backend.dbCLasses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
 import java.util.Date;
 
 @Entity
@@ -14,9 +16,9 @@ public class PurchasedPayment {
     @Column(nullable = false)
     private Long courseId;
 
-    // Define the foreign key relationship to StudentEntity
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"purchasedPayments"}) // Avoid infinite loop
     private StudentEntity student;
 
     @Column(nullable = false)
@@ -39,8 +41,7 @@ public class PurchasedPayment {
         this.paymentDate = paymentDate;
     }
 
-    // Getters and Setters
-
+    // Getters and setters
     public Long getPaymentId() {
         return paymentId;
     }

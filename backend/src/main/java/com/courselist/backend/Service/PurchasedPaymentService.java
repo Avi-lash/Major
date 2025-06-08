@@ -20,13 +20,12 @@ public class PurchasedPaymentService {
     private StudentRepository studentRepository;
 
     public PurchasedPayment savePayment(Long courseId, Long userId, String teacherName, Double amount) {
-        // Fetch the student by userId (foreign key)
         StudentEntity student = studentRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found with ID: " + userId));
 
         PurchasedPayment payment = new PurchasedPayment();
         payment.setCourseId(courseId);
-        payment.setStudent(student); // updated field
+        payment.setStudent(student);
         payment.setTeacherName(teacherName);
         payment.setAmount(amount);
         payment.setPaymentDate(new Date());
@@ -37,7 +36,10 @@ public class PurchasedPaymentService {
     public List<PurchasedPayment> getPaymentsByUserId(Long userId) {
         StudentEntity student = studentRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found with ID: " + userId));
-
         return purchasedPaymentRepository.findByStudent(student);
+    }
+
+    public List<PurchasedPayment> getPaymentsByCourseId(Long courseId) {
+        return purchasedPaymentRepository.findByCourseId(courseId);
     }
 }

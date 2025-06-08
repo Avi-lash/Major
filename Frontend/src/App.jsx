@@ -22,6 +22,8 @@ import PayMethod from './Pages/PayMethod';
 import Pay1 from './Pages/Pay1';
 import Pay2 from './Pages/Pay2';
 import Mycourse from './Pages/Mycourse';
+import CourseStudent from './Pages/Course_student';
+import EditProfile from './Pages/EditProfile';
 
 
 // Components
@@ -57,6 +59,8 @@ const App = () => {
         <Route path="/pay1" element={<Pay1 />} />
         <Route path="/pay2" element={<Pay2 />} />
         <Route path="/mycourse/:studentId" element={<Mycourse />} />
+        <Route path="/coursestudents" element={<CourseStudent/>} />
+        <Route path="/edit_profile"  element={<EditProfile/>} />
 
       </Routes>
     </Router>

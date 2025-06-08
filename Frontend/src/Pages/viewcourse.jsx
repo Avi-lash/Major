@@ -42,6 +42,11 @@ const CourseControlPanel = () => {
     setDropdownOpen(null);
   };
 
+  const handleViewStudentsClick = (courseId) => {
+    navigate('/coursestudents', { state: { courseId } });
+    setDropdownOpen(null);
+  };
+
   return (
     <div style={styles.wrapper}>
       <h1 style={styles.glowingHeader}>🎓 Your Added Courses</h1>
@@ -75,16 +80,18 @@ const CourseControlPanel = () => {
 
               {dropdownOpen === course.courseId && (
                 <div style={styles.dropdownMenu}>
-                  
-                  
-                
                   <div
                     style={styles.dropdownItem}
                     onClick={() => handleUploadClick(course.courseId)}
                   >
                     Upload Details
                   </div>
-                  <div style={styles.dropdownItem}>View Student Details</div>
+                  <div
+                    style={styles.dropdownItem}
+                    onClick={() => handleViewStudentsClick(course.courseId)}
+                  >
+                    View Student Details
+                  </div>
                 </div>
               )}
             </div>

@@ -40,7 +40,12 @@ const TeacherHomePanel = () => {
             >
               View Profile
             </div>
-            <div style={styles.dropdownItem}>Edit Profile</div>
+            <div
+              style={styles.dropdownItem}
+              onClick={() => navigate('/edit_profile')}
+            >
+              Edit Profile
+            </div>
             <div style={styles.dropdownItem}>Logout</div>
           </div>
         )}
