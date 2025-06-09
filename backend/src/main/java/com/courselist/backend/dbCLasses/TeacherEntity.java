@@ -3,6 +3,9 @@ package com.courselist.backend.dbCLasses;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "teacher_info")
 public class TeacherEntity {
@@ -20,7 +23,9 @@ public class TeacherEntity {
 
     private String password;
 
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("teacher-to-courses")
+
     private List<CourseEntity> courses;
 
     // Constructors

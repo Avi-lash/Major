@@ -1,5 +1,6 @@
 package com.courselist.backend.Service;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -137,5 +138,41 @@ public class StudentServiceImp {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
-    
+
+     public StudentEntity updateStudent(Long id, StudentEntity updatedStudentData) {
+        Optional<StudentEntity> existingStudentOptional = studentRepository.findById(id);
+
+        if (existingStudentOptional.isPresent()) {
+            StudentEntity existingStudent = existingStudentOptional.get();
+
+            // Update only the fields that are allowed to be changed
+            existingStudent.setName(updatedStudentData.getName());
+            existingStudent.setEmail(updatedStudentData.getEmail()); // Assuming email is updatable
+            existingStudent.setPhnno(updatedStudentData.getPhnno()); // Assuming your StudentEntity has a getPhoneNumber/setPhoneNumber method
+
+            // IMPORTANT: Do NOT update password here unless it's explicitly part of a password reset flow
+            // If StudentEntity has other fields you want to allow updating, add them here:
+            // existingStudent.setAddress(updatedStudentData.getAddress());
+            // existingStudent.setGrade(updatedStudentData.getGrade());
+
+
+            return studentRepository.save(existingStudent); // Save and return the updated entity
+        } else {
+            return null; // Return null if student not found, controller should handle 404
+        }
+    }
+
+    // Method to delete a student
+    public String deleteStudent(Long id) {
+        if (studentRepository.existsById(id)) {
+            studentRepository.deleteById(id);
+            return "Student deleted successfully";
+        } else {
+            return "Student not found";
+        }
+    }
+
+     public List<StudentEntity> getAllStudents() {
+        return (List<StudentEntity>) studentRepository.findAll(); // findAll returns Iterable, cast to List
+    }
 }

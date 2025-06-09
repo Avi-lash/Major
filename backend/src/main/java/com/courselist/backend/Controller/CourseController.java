@@ -7,13 +7,14 @@ import com.courselist.backend.dbCLasses.CourseDTO;
 import com.courselist.backend.dbCLasses.Video; // Import Video entity
 import com.courselist.backend.playload.CustomMessage; // Assuming you have this DTO for error messages
 
+import io.jsonwebtoken.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.Base64;
 import java.util.stream.Collectors;
 
 @RestController
@@ -128,5 +129,64 @@ public class CourseController {
         }
 
         return ResponseEntity.ok(new VideoInfoDto(video.getVideoId(), video.getTitle(), video.getDescription()));
+    }
+ @PutMapping("/update/{id}")
+    public ResponseEntity<CourseEntity> updateCourse(
+            @PathVariable Long id,
+            @RequestParam("courseName") String courseName,
+            @RequestParam("description") String description,
+            @RequestParam("fees") Double fees,
+            @RequestParam("duration") String duration,
+            @RequestParam("teacherName") String teacherName,
+            @RequestParam(value = "image", required = false) MultipartFile image) { // `required = false` for optional image update
+        try {
+            // Fetch existing course
+            CourseEntity existingCourse = courseService.getCourseById(id); // You'll need a getCourseById in your service
+            if (existingCourse == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            // Update fields from request parameters
+            existingCourse.setCourseName(courseName);
+            existingCourse.setDescription(description);
+            existingCourse.setFees(fees);
+            existingCourse.setDuration(duration);
+            existingCourse.setTeacherName(teacherName);
+
+            // Handle image update
+            if (image != null && !image.isEmpty()) {
+                existingCourse.setImageData(image.getBytes());
+            }
+            // If image is null and not empty, it means no new image was uploaded.
+            // In this case, keep the existing image data. Your frontend logic
+            // handles this by not appending 'image' to FormData if no new file is selected.
+
+            CourseEntity updatedCourse = courseService.updateCourse(id, existingCourse);
+            return ResponseEntity.ok(updatedCourse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // NEW ENDPOINT: Delete Course (DELETE)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
+        try {
+            String result = courseService.deleteCourse(id);
+            if (result.equals("Course deleted successfully")) {
+                return ResponseEntity.ok(result);
+            } else if (result.equals("Course not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting course: " + e.getMessage());
+        }
     }
 }

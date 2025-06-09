@@ -1,12 +1,14 @@
 package com.courselist.backend.Controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -142,5 +144,50 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 if student not found
         }
         return ResponseEntity.ok(student);
+    }
+
+      // NEW ENDPOINT: Get All Students
+    @GetMapping("/all") // This maps to http://localhost:8080/student/all
+    public ResponseEntity<List<StudentEntity>> getAllStudents() {
+        try {
+            List<StudentEntity> students = studentService.getAllStudents(); // Assume a new method in service
+            return ResponseEntity.ok(students);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+     @PutMapping("/update/{id}")
+    public ResponseEntity<StudentEntity> updateStudent(@PathVariable Long id, @RequestBody StudentEntity student) {
+        try {
+            StudentEntity updatedStudent = studentService.updateStudent(id, student); // Assuming updateStudent in service
+            if (updatedStudent == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Student not found
+            }
+            return ResponseEntity.ok(updatedStudent); // Return updated student entity
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Generic error
+        }
+    }
+
+    // NEW ENDPOINT: Delete Student (DELETE)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
+        try {
+            String result = studentService.deleteStudent(id); // Assuming deleteStudent in service
+            if (result.equals("Student deleted successfully")) {
+                return ResponseEntity.ok(result);
+            } else if (result.equals("Student not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting student: " + e.getMessage());
+        }
     }
 }

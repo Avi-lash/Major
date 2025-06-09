@@ -24,7 +24,10 @@ import Pay2 from './Pages/Pay2';
 import Mycourse from './Pages/Mycourse';
 import CourseStudent from './Pages/Course_student';
 import EditProfile from './Pages/EditProfile';
-
+import AssignmentGeneratorPage from './Pages/assignment';
+import StudentManagement from './Pages/studman';
+import TeacherManagement from './Pages/teacherman';
+import CourseManagement from './Pages/courseman';
 // Components
 import Navbar from './assets/components/Navbar';
 import VideoUpload from './Pages/VideoUpload';
@@ -60,6 +63,9 @@ const App = () => {
 
         {/* Admin & Payment */}
         <Route path="/admin" element={<Admin />} />
+        <Route path="/studentadmin" element={<StudentManagement />}/>
+        <Route path="/teacheradmin" element={<TeacherManagement />}/>
+        <Route path="/courseadmin" element={<CourseManagement />}/>
         <Route path="/paymethod" element={<PayMethod />} />
         <Route path="/pay1" element={<Pay1 />} />
         <Route path="/pay2" element={<Pay2 />} />
@@ -71,6 +77,9 @@ const App = () => {
 
         {/* Video Upload Route */}
         <Route path="/upload/:courseId" element={<UploadWrapper />} />
+        { <Route path="/generate-assignment" element={<AssignmentGeneratorPage />} />}
+
+
 
         {/* Redirect Route */}
         <Route path="/redirect" element={<HomeRedirect />} />

@@ -1,6 +1,7 @@
 package com.courselist.backend.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -125,5 +126,18 @@ public class TeacherServiceImp {
         existingTeacher.setEmail(updatedTeacher.getEmail());
         existingTeacher.setPhnno(updatedTeacher.getPhnno());
         return teacherRepository.save(existingTeacher);
+    }
+
+    public String deleteTeacher(Long id) {
+        if (teacherRepository.existsById(id)) {
+            teacherRepository.deleteById(id);
+            return "Teacher deleted successfully";
+        } else {
+            return "Teacher not found";
+        }
+    }
+
+      public List<TeacherEntity> getAllTeachers() {
+        return (List<TeacherEntity>) teacherRepository.findAll(); // findAll returns Iterable, cast to List
     }
 }

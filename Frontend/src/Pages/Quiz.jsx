@@ -3,13 +3,16 @@ import axios from "axios";
 import { useParams } from 'react-router-dom';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const API_KEY = "AIzaSyBWu4NbRJRpUyJ8yF9iK5oTrQtte-S-aMc";
+const API_KEY = "AIzaSyBWu4NbRJRpUyJ8yF9iK5oTrQtte-S-aMc"; // Ensure your actual API key is here
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 function LearningPage() {
   const { courseId } = useParams();
+
   const [videoId, setVideoId] = useState(null);
-  const [videoTitle, setVideoTitle] = useState("");
+  const [videoTitle, setVideoTitle] = useState("Loading Video...");
+  // NEW: Add state for videoDescription
+  const [videoDescription, setVideoDescription] = useState("");
 
   const [assignmentUrl, setAssignmentUrl] = useState(null);
   const [loadingAssignment, setLoadingAssignment] = useState(false);
@@ -20,85 +23,114 @@ function LearningPage() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
-  const [status, setStatus] = useState("start");
+  const [status, setStatus] = useState("start"); // "start", "loading", "ready"
   const [errorMessage, setErrorMessage] = useState("");
   const [answers, setAnswers] = useState([]);
 
-  // Fetch videoId and videoTitle based on courseId
+  // Fetch videoId, videoTitle, AND videoDescription based on courseId
+  // This useEffect fetches the *primary* video for a course
   useEffect(() => {
     if (!courseId) return;
 
     const fetchVideoByCourse = async () => {
       try {
+        // This endpoint should return videoId, title, and description
         const response = await axios.get(`http://localhost:8080/api/v1/courses/${courseId}/video`);
-        const { videoId: fetchedVideoId, title } = response.data;
+        const { videoId: fetchedVideoId, title, description } = response.data;
 
         setVideoId(fetchedVideoId);
         setVideoTitle(title || "");
+        setVideoDescription(description || ""); // Set the description here
       } catch (error) {
         console.error("Failed to fetch video for course", error);
         setVideoId(null);
         setVideoTitle("");
-        setError("Failed to load video info.");
+        setVideoDescription(""); // Clear on error
+        setError("Failed to load video info for this course.");
       }
     };
 
     fetchVideoByCourse();
   }, [courseId]);
 
-  // Fetch assignment and metadata when videoId changes
+  // Fetch assignment URL and ensure videoTitle/description are updated from /videos/{videoId} endpoint
   useEffect(() => {
     if (!videoId) return;
 
-    const fetchAssignment = async () => {
+    const fetchAssignmentAndMetadata = async () => {
       setLoadingAssignment(true);
       setError("");
       try {
+        // This endpoint (`/api/v1/videos/{videoId}`) now provides the description
         const response = await axios.get(`http://localhost:8080/api/v1/videos/${videoId}`);
-        const { assignmentPath, title } = response.data;
+        const { assignmentPath, title, description } = response.data; // Destructure description
 
+        // Update videoTitle and videoDescription from this response as well
+        // (important if the /courses/{courseId}/video endpoint doesn't give full details)
         if (title) setVideoTitle(title);
+        if (description) setVideoDescription(description); // Set the description again for robustness
+
         if (assignmentPath) {
           setAssignmentUrl(`http://localhost:8080/api/v1/videos/download-assignment/${videoId}`);
         } else {
           setAssignmentUrl(null);
         }
       } catch (err) {
-        setError("Failed to load assignment info.");
+        setError("Failed to load assignment or full video info.");
         setAssignmentUrl(null);
       } finally {
         setLoadingAssignment(false);
       }
     };
 
-    fetchAssignment();
-  }, [videoId]);
+    fetchAssignmentAndMetadata();
+  }, [videoId]); // Re-run when videoId changes
 
+  // Memoized video stream URL for efficiency
   const videoStreamUrl = videoId ? `http://localhost:8080/api/v1/videos/stream/${videoId}` : "";
 
+  // Handle assignment download
   const handleDownload = async () => {
+    if (!assignmentUrl) {
+      alert("No assignment available for download.");
+      return;
+    }
     try {
       const response = await axios.get(assignmentUrl, { responseType: "blob" });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "assignment.pdf");
+      // Use videoTitle for the download filename for clarity
+      link.setAttribute("download", `${videoTitle.replace(/[^a-z0-9]/gi, '_')}_assignment.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (err) {
       alert("Failed to download assignment.");
+      console.error("Download error:", err);
     }
   };
 
+  // --- Quiz Generation Logic ---
   const startQuiz = async () => {
     setStatus("loading");
     setErrorMessage("");
 
+    // NEW: Check if videoDescription is available before generating quiz
+    if (!videoDescription || videoDescription.trim() === "") {
+      setErrorMessage("Video description is not available to generate a quiz. Please ensure the video has a description.");
+      setStatus("start");
+      return; // Stop execution if no description
+    }
+
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-      const prompt = `Create 5 multiple-choice quiz questions about "${videoTitle}". Format: JSON. Example: [{"question": "What is 2+2?", "options": ["1", "2", "3", "4"], "answer": "4"}]`;
+      // CRUCIAL CHANGE: Use videoDescription in the prompt for better quiz relevance
+      const prompt = `Create 5 multiple-choice quiz questions based on the following video description:
+      "${videoDescription}"
+      Ensure the questions are directly relevant to the content described.
+      Format the output as a JSON array of objects. Each object must have "question" (string), "options" (array of strings, with at least 2 options), and "answer" (string, which must be one of the options). Example: [{"question": "What is 2+2?", "options": ["1", "2", "3", "4"], "answer": "4"}]`;
 
       const result = await model.generateContent(prompt);
       const responseText = result.response.candidates[0]?.content?.parts[0]?.text;
@@ -109,7 +141,28 @@ function LearningPage() {
         parsedQuestions = JSON.parse(cleanedResponse);
       } catch (jsonError) {
         console.error("Error parsing JSON:", jsonError);
-        setErrorMessage("Invalid format received from AI.");
+        setErrorMessage("Invalid format received from AI. Please try again. AI response: " + cleanedResponse);
+        setStatus("start");
+        return;
+      }
+
+      // Basic validation of parsedQuestions structure for robustness
+      if (!Array.isArray(parsedQuestions) || parsedQuestions.length === 0) {
+        setErrorMessage("AI returned an empty or malformed quiz. Please try again.");
+        setStatus("start");
+        return;
+      }
+      const isValidQuiz = parsedQuestions.every(q =>
+        typeof q.question === 'string' && q.question.trim().length > 0 &&
+        Array.isArray(q.options) && q.options.length >= 2 &&
+        q.options.every(opt => typeof opt === 'string' && opt.trim().length > 0) &&
+        typeof q.answer === 'string' && q.answer.trim().length > 0 &&
+        q.options.includes(q.answer)
+      );
+
+      if (!isValidQuiz) {
+        console.error("Quiz structure validation failed:", parsedQuestions);
+        setErrorMessage("AI returned a quiz with invalid question structure or missing details. Please try again.");
         setStatus("start");
         return;
       }
@@ -123,17 +176,26 @@ function LearningPage() {
       setStatus("ready");
     } catch (error) {
       console.error("Quiz generation error:", error);
-      setErrorMessage("Failed to fetch quiz. Check network or API key.");
+      if (error.response && error.response.status === 403) {
+        setErrorMessage("Failed to fetch quiz. Check your Google Generative AI API key or its permissions.");
+      } else {
+        setErrorMessage("Failed to fetch quiz. Check network connection or API service availability.");
+      }
       setStatus("start");
     }
   };
 
+  // Handle user answer selection
   const handleAnswerClick = (option) => {
     setSelectedOption(option);
   };
 
+  // Handle moving to the next question or showing score
   const handleNextQuestion = () => {
-    if (!selectedOption) return alert("Please select an answer.");
+    if (!selectedOption) {
+      alert("Please select an answer before proceeding.");
+      return;
+    }
 
     const current = questions[currentQuestion];
     const isCorrect = selectedOption === current.answer;
@@ -155,7 +217,7 @@ function LearningPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-900 text-white">
-      {/* Sidebar */}
+      {/* Sidebar - Assignment and Quiz */}
       <div className="w-full md:w-1/3 lg:w-1/4 p-4 border-r border-gray-700 overflow-y-auto">
         <h1 className="text-2xl font-bold mb-4 text-center">ASSIGNMENT AND QUIZ</h1>
         <p className="mb-2 text-center text-gray-400">
@@ -164,9 +226,10 @@ function LearningPage() {
 
         {/* Assignment Section */}
         <div className="mb-6">
+          <h2 className="text-xl font-bold mb-3 text-center">Assignment</h2>
           {loadingAssignment ? (
             <p>Loading assignment info...</p>
-          ) : error ? (
+          ) : error && error.includes("assignment") ? (
             <p className="text-red-500">{error}</p>
           ) : assignmentUrl ? (
             <button
@@ -176,7 +239,7 @@ function LearningPage() {
               Download Assignment
             </button>
           ) : (
-            <p className="text-sm text-gray-400">No assignment available.</p>
+            <p className="text-sm text-gray-400">No assignment available for this video.</p>
           )}
         </div>
 
@@ -185,7 +248,13 @@ function LearningPage() {
           <h2 className="text-xl font-bold mb-2 text-center">Quiz Section</h2>
 
           {status === "start" && (
-            <button onClick={startQuiz} className="w-full bg-green-600 px-4 py-2 rounded mb-2" disabled={!videoTitle}>
+            <button
+              onClick={startQuiz}
+              className="w-full bg-green-600 px-4 py-2 rounded mb-2"
+              // NEW: Disable button if no description or if loading
+              disabled={!videoDescription || videoDescription.trim() === "" || status === "loading"}
+              title={(!videoDescription || videoDescription.trim() === "") ? "Video description is required to generate quiz" : ""}
+            >
               Start Quiz
             </button>
           )}
@@ -213,11 +282,11 @@ function LearningPage() {
               </button>
             </div>
           ) : (
-            status === "ready" && (
+            status === "ready" && questions[currentQuestion] && (
               <div>
-                <h3 className="text-base font-medium mb-2">{questions[currentQuestion]?.question}</h3>
+                <h3 className="text-base font-medium mb-2">{questions[currentQuestion].question}</h3>
                 <div className="space-y-2 mb-4">
-                  {questions[currentQuestion]?.options.map((option) => (
+                  {questions[currentQuestion].options.map((option) => (
                     <button
                       key={option}
                       onClick={() => handleAnswerClick(option)}

@@ -107,6 +107,10 @@ formData.append("course_id", courseId);
   setProgress(0);
 }
   }
+   const handleGenerateAssignmentClick = () => {
+    // This will create a URL like: http://localhost:5173/generate-assignment?courseId=123
+    navigate(`/generate-assignment?courseId=${courseId}`);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center p-6 bg-gray-800 rounded-lg shadow-xl max-w-lg mx-auto">
@@ -224,6 +228,9 @@ formData.append("course_id", courseId);
           >
             {uploading ? `Uploading (${progress}%)` : "Submit Video"}
           </button>
+            <button onClick={handleGenerateAssignmentClick}>
+      Go to Assignment Generator
+    </button>
         </div>
       </form>
     </div>

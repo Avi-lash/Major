@@ -1,6 +1,7 @@
 // File: Admin.jsx
 import React from 'react';
 import { FaUser, FaTachometerAlt, FaSignOutAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom'; // Import Link
 
 const Admin = () => {
   return (
@@ -22,23 +23,33 @@ const Admin = () => {
       </aside>
 
       {/* Main Content */}
-<main className="flex-1 p-10 bg-white">
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div className="bg-gradient-to-r from-pink-400 to-pink-600 text-white rounded-xl p-6 shadow-md transform transition-transform duration-300 hover:scale-105">
-      <h2 className="text-xl font-semibold mb-2">Manage</h2>
-      <p className="text-3xl font-bold">STUDENTS</p>
-    </div>
-    <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl p-6 shadow-md transform transition-transform duration-300 hover:scale-105">
-      <h2 className="text-xl font-semibold mb-2">Manage</h2>
-      <p className="text-3xl font-bold">TEACHERS</p>
-    </div>
-    <div className="bg-gradient-to-r from-green-400 to-green-600 text-white rounded-xl p-6 shadow-md transform transition-transform duration-300 hover:scale-105">
-      <h2 className="text-xl font-semibold mb-2">Manage</h2>
-      <p className="text-3xl font-bold">Courses</p>
-    </div>
-  </div>
-</main>
+      <main className="flex-1 p-10 bg-white">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Manage Students */}
+          <Link to="/studentadmin" className="block"> {/* Wrap with Link */}
+            <div className="bg-gradient-to-r from-pink-400 to-pink-600 text-white rounded-xl p-6 shadow-md transform transition-transform duration-300 hover:scale-105 cursor-pointer">
+              <h2 className="text-xl font-semibold mb-2">Manage</h2>
+              <p className="text-3xl font-bold">STUDENTS</p>
+            </div>
+          </Link>
 
+          {/* Manage Teachers */}
+          <Link to="/teacheradmin" className="block"> {/* Wrap with Link */}
+            <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl p-6 shadow-md transform transition-transform duration-300 hover:scale-105 cursor-pointer">
+              <h2 className="text-xl font-semibold mb-2">Manage</h2>
+              <p className="text-3xl font-bold">TEACHERS</p>
+            </div>
+          </Link>
+
+          {/* Manage Courses */}
+          <Link to="/courseadmin" className="block"> {/* Wrap with Link */}
+            <div className="bg-gradient-to-r from-green-400 to-green-600 text-white rounded-xl p-6 shadow-md transform transition-transform duration-300 hover:scale-105 cursor-pointer">
+              <h2 className="text-xl font-semibold mb-2">Manage</h2>
+              <p className="text-3xl font-bold">Courses</p>
+            </div>
+          </Link>
+        </div>
+      </main>
     </div>
   );
 };
