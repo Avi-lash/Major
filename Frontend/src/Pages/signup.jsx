@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,7 +15,7 @@ export default function SignupForm() {
   });
 
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -79,6 +79,9 @@ export default function SignupForm() {
         confirmPassword: '',
         role: 'teacher'
       });
+      
+        navigate('/login');
+      
     } catch (err) {
       console.error(err);
       if (err.response && err.response.data.includes('Email already registered')) {
