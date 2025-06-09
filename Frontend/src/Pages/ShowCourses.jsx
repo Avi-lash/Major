@@ -8,17 +8,17 @@ const ShowCourses = () => {
   const [courseDetails, setCourseDetails] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch all courses
+  // ✅ Fetch all courses
   useEffect(() => {
-    axios.get('http://localhost:8080/courses')
+    axios.get('http://localhost:8080/api/v1/courses')
       .then((res) => setCourses(res.data))
       .catch(console.error);
   }, []);
 
-  // Fetch single course details
+  // ✅ Fetch single course details
   useEffect(() => {
     if (selectedCourseId !== null) {
-      axios.get(`http://localhost:8080/courses/${selectedCourseId}`)
+      axios.get(`http://localhost:8080/api/v1/courses/${selectedCourseId}`)
         .then((res) => setCourseDetails(res.data))
         .catch(console.error);
     }

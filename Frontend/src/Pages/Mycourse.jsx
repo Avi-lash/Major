@@ -50,7 +50,7 @@ const Mycourse = () => {
               {course.paymentDate ? new Date(course.paymentDate).toLocaleDateString() : 'N/A'}
             </p>
             <button
-              onClick={() => navigate('/quiz')}
+              onClick={() => navigate(`/quiz/${course.courseId}`)}
               className="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
             >
               START LEARNING

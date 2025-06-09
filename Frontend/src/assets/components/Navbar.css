@@ -5,35 +5,54 @@
     justify-content: space-between;
     align-items: center;
     background-color: #6366f1; /* Indigo-500 */
-    padding: 1rem 2rem;
+    padding: 1rem 2rem; /* REDUCED VERTICAL PADDING HERE (1rem -> 0.75rem) */
     color: white;
     font-family: 'Segoe UI', sans-serif;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Already correct and crucial for width calculation */
     position: sticky;
     top: 0;
     z-index: 1000;
-  }
-  
-  .navbar .logo {
-    font-size: 1.5rem;
+}
+
+.navbar .logo {
+    font-size: 1.5rem; /* ~24px height for text */
     font-weight: bold;
-  }
-  
-  .navbar .nav-links {
+}
+
+.navbar .nav-links {
     display: flex;
     gap: 1.5rem;
-  }
-  
-  .navbar .nav-links a {
+    /* flex-wrap: wrap; - Keep this commented unless you need links to wrap on small screens */
+}
+
+.navbar .nav-links a {
     color: white;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
-  }
-  
-  .navbar .nav-links a:hover {
+}
+
+.navbar .nav-links a:hover {
     color: #e0e7ff; /* Light indigo on hover */
-  }
-  
+}
+
+/* Basic responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* Stack items vertically on small screens */
+        padding: 0.75rem; /* Adjust padding for smaller screens (consistent with desktop) */
+    }
+
+    .navbar .nav-links {
+        margin-top: 0.75rem; /* Add some space when stacked (reduced from 1rem) */
+        flex-direction: column; /* Stack links vertically */
+        align-items: center; /* Center links when stacked */
+    }
+
+    .navbar .logo,
+    .navbar .profile-icon {
+        margin-bottom: 0.5rem; /* Add space below logo and profile icon */
+    }
+}

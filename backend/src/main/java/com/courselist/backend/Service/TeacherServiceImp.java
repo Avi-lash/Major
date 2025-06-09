@@ -8,76 +8,74 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.courselist.backend.Controller.TeacherController;
 import com.courselist.backend.config.JwtUtil;
 import com.courselist.backend.dbCLasses.TeacherEntity;
 import com.courselist.backend.repository.TeacherRepository;
 
 @Service
 public class TeacherServiceImp {
+
     @Autowired
     private TeacherRepository teacherRepository;
+
     @Autowired
     private EmailService emailservice;
+
     @Autowired
     private JwtUtil jwtUtil;
-    
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public String createTeacher(TeacherEntity teacher) {
         if (teacherRepository.existsByEmail(teacher.getEmail())) {
             return "Email already registered";
         }
-
-        // Hash the password
         teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         teacherRepository.save(teacher);
-        emailservice.sendEmail(teacher.getEmail(), "Registration Successful", "your account...");
+        emailservice.sendEmail(teacher.getEmail(), "Registration Successful", "Your account has been created.");
         return "Saved Successfully";
     }
 
     public Map<String, Object> loginTeacher(Map<String, Object> request) {
-    String email = (String) request.get("email");
-    String password = (String) request.get("password");
-    System.out.println(email + " " + password);
+        String email = (String) request.get("email");
+        String password = (String) request.get("password");
 
-    TeacherEntity teacher = teacherRepository.findByEmail(email);  // Returns null if not found
-    Map<String, Object> response = new HashMap<>();
+        TeacherEntity teacher = teacherRepository.findByEmail(email);
+        Map<String, Object> response = new HashMap<>();
 
-    if (teacher == null || !passwordEncoder.matches(password, teacher.getPassword())) {
-        response.put("status", "error");
-        response.put("message", "Invalid email or password");
+        if (teacher == null || !passwordEncoder.matches(password, teacher.getPassword())) {
+            response.put("status", "error");
+            response.put("message", "Invalid email or password");
+            return response;
+        }
+
+        response.put("status", "success");
+        response.put("message", "Login successful");
+        response.put("teacherId", teacher.getId());
+        response.put("teacherName", teacher.getName());
+        response.put("email", teacher.getEmail());
+
         return response;
     }
 
-    response.put("status", "success");
-    response.put("message", "Login successful");
-    response.put("teacherId", teacher.getId());
-    response.put("teacherName", teacher.getName());
-    response.put("email", teacher.getEmail());
-
-    return response;
-}
-
-    
     public Map<String, Object> sendOtp(String email) {
         Map<String, Object> response = new HashMap<>();
         try {
-            TeacherEntity existingTeacherOpt = teacherRepository.findByEmail(email);
-            if (existingTeacherOpt!=null) {
+            TeacherEntity teacher = teacherRepository.findByEmail(email);
+            if (teacher != null) {
                 String otp = generateOtp();
-                emailservice.sendEmail(email, "Password Recovery", "Your otp is: " + otp);
+                emailservice.sendEmail(email, "Password Recovery", "Your OTP is: " + otp);
                 String token = jwtUtil.generateOtpToken(email, otp, 360);
                 response.put("status", "success");
                 response.put("token", token);
-                response.put("message", "Otp sent successfully");
+                response.put("message", "OTP sent successfully");
             } else {
                 response.put("status", "failed");
                 response.put("message", "Email not found");
             }
         } catch (Exception e) {
             response.put("status", "failed");
-            response.put("message", "Error occured: " + e.getMessage());
+            response.put("message", "Error occurred: " + e.getMessage());
         }
         return response;
     }
@@ -94,7 +92,6 @@ public class TeacherServiceImp {
         } else {
             response.put("error", "Teacher not found");
         }
-
         return response;
     }
 
@@ -105,22 +102,19 @@ public class TeacherServiceImp {
 
     public String updatePassword(String email, String password) {
         try {
-            TeacherEntity existingTeacherOpt = teacherRepository.findByEmail(email);
-            if (existingTeacherOpt!=null) {
-                // TeacherEntity existingTeacher = existingTeacherOpt.get();
-                String hashpassword = passwordEncoder.encode(password);
-                existingTeacherOpt.setPassword(hashpassword);
-                teacherRepository.save(existingTeacherOpt);
-                return "password updated successfully";
+            TeacherEntity teacher = teacherRepository.findByEmail(email);
+            if (teacher != null) {
+                teacher.setPassword(passwordEncoder.encode(password));
+                teacherRepository.save(teacher);
+                return "Password updated successfully";
             } else {
-                return "password update failed!!!";
+                return "Password update failed";
             }
         } catch (Exception e) {
-            return "error= " + e.getMessage();
+            return "Error: " + e.getMessage();
         }
     }
 
-    // New method to update teacher profile info
     public TeacherEntity updateTeacher(Long id, TeacherEntity updatedTeacher) {
         Optional<TeacherEntity> optionalTeacher = teacherRepository.findById(id);
         if (!optionalTeacher.isPresent()) {

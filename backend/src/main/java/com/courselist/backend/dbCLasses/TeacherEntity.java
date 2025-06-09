@@ -9,8 +9,7 @@ public class TeacherEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private Long id;  // Keep this simple and consistent
 
     private String name;
 
@@ -21,7 +20,7 @@ public class TeacherEntity {
 
     private String password;
 
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseEntity> courses;
 
     // Constructors
@@ -36,52 +35,22 @@ public class TeacherEntity {
         this.courses = courses;
     }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    // Getters and setters (standard naming)
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getPhnno() { return phnno; }
+    public void setPhnno(String phnno) { this.phnno = phnno; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhnno() {
-        return phnno;
-    }
-
-    public void setPhnno(String phnno) {
-        this.phnno = phnno;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<CourseEntity> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<CourseEntity> courses) {
-        this.courses = courses;
-    }
+    public List<CourseEntity> getCourses() { return courses; }
+    public void setCourses(List<CourseEntity> courses) { this.courses = courses; }
 }

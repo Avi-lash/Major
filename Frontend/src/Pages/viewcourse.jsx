@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const CourseControlPanel = () => {
   const [courses, setCourses] = useState([]);
-  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
   const navigate = useNavigate();
   const dropdownRefs = useRef({});
 
@@ -25,37 +25,45 @@ const CourseControlPanel = () => {
       const isOutside = Object.values(dropdownRefs.current).every(
         (ref) => ref && !ref.contains(e.target)
       );
-      if (isOutside) setOpenDropdownId(null);
+      if (isOutside) setDropdownOpen(null);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleUploadClick = (courseId) => {
-    navigate('/detailsupload', { state: { courseId } });
-    setOpenDropdownId(null);
+    navigate(`/upload/${courseId}`);
+    setDropdownOpen(null);
   };
 
   const handleViewStudentsClick = (courseId) => {
     navigate('/coursestudents', { state: { courseId } });
-    setOpenDropdownId(null);
+    setDropdownOpen(null);
   };
 
   return (
-    <div style={styles.wrapper}>
-      <h1 style={styles.glowingHeader}>🎓 Your Added Courses</h1>
+    <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
+      <h1
+        style={{
+          color: '#00ffea',
+          textShadow: '0 0 8px #00ffea',
+          textAlign: 'center',
+          marginBottom: '30px',
+        }}
+      >
+        🎓 Your Added Courses
+      </h1>
 
       {courses.length === 0 ? (
-        <p style={{ color: '#ccc' }}>No courses uploaded yet.</p>
+        <p style={{ color: '#ccc', textAlign: 'center' }}>No courses uploaded yet.</p>
       ) : (
         courses.map((course) => (
           <div key={course.courseId} style={styles.card}>
             <img
-              src={`data:image/jpeg;base64,${course.image}`}
+              src={`http://localhost:8080/courset/image/${course.courseId}`}
               alt={course.courseName}
               style={styles.image}
             />
-
             <div style={styles.courseInfo}>
               <h2 style={styles.courseName}>Course Name: {course.courseName}</h2>
               <p>Description: {course.description}</p>
@@ -69,24 +77,24 @@ const CourseControlPanel = () => {
             >
               <button
                 onClick={() =>
-                  setOpenDropdownId((prev) => (prev === course.courseId ? null : course.courseId))
+                  setDropdownOpen((prev) => (prev === course.courseId ? null : course.courseId))
                 }
                 style={styles.dropdownButton}
               >
                 ⋮
               </button>
 
-              {openDropdownId === course.courseId && (
+              {dropdownOpen === course.courseId && (
                 <div style={styles.dropdownMenu}>
                   <div
-                    style={styles.dropdownItem}
                     onClick={() => handleUploadClick(course.courseId)}
+                    style={styles.dropdownItem}
                   >
                     Upload Details
                   </div>
                   <div
-                    style={styles.dropdownItem}
                     onClick={() => handleViewStudentsClick(course.courseId)}
+                    style={styles.dropdownItem}
                   >
                     View Student Details
                   </div>
@@ -101,19 +109,6 @@ const CourseControlPanel = () => {
 };
 
 const styles = {
-  wrapper: {
-    padding: '40px',
-    backgroundColor: '#000',
-    minHeight: '100vh',
-    color: '#fff',
-  },
-  glowingHeader: {
-    fontSize: '36px',
-    color: '#0ff',
-    textAlign: 'center',
-    marginBottom: '30px',
-    textShadow: '0 0 10px #0ff, 0 0 20px #0ff',
-  },
   card: {
     backgroundColor: '#1a1a1a',
     borderRadius: '10px',
@@ -130,6 +125,7 @@ const styles = {
     objectFit: 'cover',
     borderRadius: '8px',
     marginRight: '20px',
+    border: '2px solid #00ffea',
   },
   courseInfo: {
     flex: 1,
@@ -160,20 +156,19 @@ const styles = {
     position: 'absolute',
     top: '35px',
     right: 0,
-    backgroundColor: '#fff',
-    color: '#000',
-    border: '1px solid #ccc',
+    backgroundColor: '#333',
     borderRadius: '6px',
-    minWidth: '180px',
+    boxShadow: '0 0 10px rgba(0,0,0,0.7)',
+    width: '160px',
     display: 'flex',
     flexDirection: 'column',
   },
   dropdownItem: {
     padding: '10px 14px',
     fontSize: '14px',
-    borderBottom: '1px solid #eee',
+    borderBottom: '1px solid #555',
     cursor: 'pointer',
-    textAlign: 'left',
+    color: '#00ffea',
   },
 };
 

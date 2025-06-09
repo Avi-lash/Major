@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss"; /* Keep this at the very top */
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -7,7 +7,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #242424; /* Global background, can be overridden by Tailwind */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -25,16 +25,25 @@ a:hover {
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  margin: 0; /* Remove default body margin */
+  /* REMOVED: display: flex; place-items: center; */
+  /* This ensures content starts from the top-left, not centered */
+  min-width: 320px; /* Good for responsiveness */
+  min-height: 100vh; /* Ensures body takes full viewport height */
+  overflow-x: hidden; /* Prevent horizontal scrolling from content overflow */
+}
+
+#root {
+  margin: 0; /* No auto margin, let Navbar be full width */
+  padding: 0; /* REMOVED: 2rem padding. This will push your Navbar to the very top. */
+  text-align: center; /* You might want to remove this if you want left-aligned text by default */
+  min-height: 100vh; /* Make #root also take full height */
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  /* Consider using Tailwind classes here: @apply text-4xl sm:text-5xl lg:text-6xl font-extrabold; */
 }
 
 button {
@@ -54,6 +63,41 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Duplicates of .logo, .card, .read-the-docs should NOT be in your global file if they are component-specific */
+/* If these are generic styles for all logos/cards in the app, keep one set here. */
+/* If .logo is specifically for your Navbar, it should only be in Navbar.css */
+/* I'm keeping them here as they were in your global CSS, but consider if they belong only in Navbar.css */
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
 }
 
 @media (prefers-color-scheme: light) {
