@@ -4,7 +4,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #6366f1; /* Indigo-500 */
+    background-color: #58018aea; /* Indigo-500 */
     padding: 1rem 2rem; /* REDUCED VERTICAL PADDING HERE (1rem -> 0.75rem) */
     color: white;
     font-family: 'Segoe UI', sans-serif;
@@ -55,4 +55,43 @@
     .navbar .profile-icon {
         margin-bottom: 0.5rem; /* Add space below logo and profile icon */
     }
+
+  
+
+}
+
+  .navbar .nav-links a {
+    position: relative;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px; /* Slight space below the text */
+    width: 0%;
+    height: 2px;
+    background-color: #e0e7ff; /* Light indigo underline */
+    transition: width 0.3s ease;
+    padding-bottom: 4px;
+}
+
+.navbar .nav-links a:hover {
+    color: #e0e7ff;
+}
+
+.navbar .nav-links a:hover::after {
+    width: 100%;
+}
+.navbar-logo img {
+  border-radius: 8px; /* initial border-radius */
+  transition: border-radius 0.3s ease;
+}
+
+.navbar-logo img:hover {
+  border-radius: 50%; /* fully rounded on hover */
 }

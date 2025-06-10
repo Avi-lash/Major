@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import { FaUser, FaTachometerAlt, FaSignOutAlt } from 'react-icons/fa';
 
 const TeacherHomePanel = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -10,11 +11,11 @@ const TeacherHomePanel = () => {
       <style>
         {`
           .animated-card {
-            background: linear-gradient(135deg, #3b82f6, #9333ea);
+            background: linear-gradient(135deg,#6441A5, #2a0845);
             transition: background 0.8s ease;
           }
           .animated-card:hover {
-            background: linear-gradient(-45deg,rgb(255, 0, 157),rgb(17, 17, 201),rgb(106, 6, 160),rgb(37, 0, 93));
+            background: linear-gradient(-45deg,#2a0845,#2a0840,#6441A5,#6441A0);
             background-size: 300% 300%;
             animation: gradientMove 4s ease infinite;
           }
@@ -27,33 +28,40 @@ const TeacherHomePanel = () => {
       </style>
 
       {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <h2 style={styles.sidebarTitle}>Menu</h2>
-        <div style={styles.sidebarItem} onClick={() => setShowDropdown(!showDropdown)}>
+<div className="w-64 bg-purple-900 text-white flex flex-col items-center py-8">
+        <h2 className="text-white text-xl mb-4 border-b border-[#555] pb-[5px]">
+          Menu
+        </h2>
+        <div
+          className="cursor-pointer py-2.5 border-b border-[#333] text-gray-300"
+          onClick={() => setShowDropdown(!showDropdown)}
+        >
           Teacher Profile ⯆
         </div>
         {showDropdown && (
-          <div style={styles.dropdown}>
+          <div className="mt-2.5 bg-purple-900 rounded-md p-2.5">
             <div
-              style={styles.dropdownItem}
+              className="flex items-center gap-2 cursor-pointer py-2 text-white border-b border-[#444] last:border-b-0"
               onClick={() => navigate('/teacherprofile')}
             >
-              View Profile
+              <FaUser /> View Profile
             </div>
             <div
-              style={styles.dropdownItem}
+              className="flex items-center gap-2 cursor-pointer py-2 text-white border-b border-[#444] last:border-b-0"
               onClick={() => navigate('/edit_profile')}
             >
-              Edit Profile
+              <FaTachometerAlt /> Edit Profile
             </div>
-            <div style={styles.dropdownItem}>Logout</div>
+            <div className="flex items-center gap-2 cursor-pointer py-2 text-white border-b border-[#444] last:border-b-0">
+              <FaSignOutAlt /> Logout
+            </div>
           </div>
         )}
       </div>
 
       {/* Main Content */}
       <div style={styles.container}>
-        <h1 style={styles.header}>Teacher Home Panel</h1>
+        <h1 style={styles.header}>TEACHER HOME PANEL</h1>
         <div style={styles.grid}>
           <Link to="/courseupload" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
             <div className="animated-card" style={styles.card}>Add Course</div>
@@ -83,36 +91,42 @@ const styles = {
     backgroundColor: '#121212',
     color: '#fff',
     minHeight: '100vh',
-    fontFamily: 'Segoe UI, sans-serif',
+    fontFamily: 'Tahoma, sans-serif',
   },
   sidebar: {
-    width: '220px',
-    backgroundColor: '#1f1f1f',
-    padding: '20px',
-    boxShadow: '2px 0 8px rgba(0,0,0,0.5)',
-  },
-  sidebarTitle: {
-    color: '#fff',
-    fontSize: '20px',
-    marginBottom: '15px',
-    borderBottom: '1px solid #555',
-    paddingBottom: '5px',
-  },
-  sidebarItem: {
-    cursor: 'pointer',
-    padding: '10px 0',
-    borderBottom: '1px solid #333',
-    color: '#ccc',
+      width: '220px',
+      backgroundColor: '#6441A5',
+      padding: '20px',
+      boxShadow: '2px 0 8px rgba(0,0,0,0.5)',
+    },
+    sidebarTitle: {
+      color: '#fff',
+      fontSize: '20px',
+      marginBottom: '15px',
+      borderBottom: '1px solid #555',
+      paddingBottom: '5px',
+    },
+    sidebarItem: {
+      cursor: 'pointer',
+      padding: '10px 0',
+      borderBottom: '1px solid #333',
+      color: '#ccc',
   },
   dropdown: {
-    marginTop: '5px',
-    paddingLeft: '10px',
-  },
-  dropdownItem: {
-    padding: '6px 0',
-    color: '#aaa',
-    cursor: 'pointer',
-  },
+      marginTop: '10px',
+      backgroundColor: '#6441A0',
+      borderRadius: '5px',
+      padding: '10px',
+    },
+    dropdownItem: {
+      cursor: 'pointer',
+      padding: '8px 0',
+      color: '#fff',
+      borderBottom: '1px solid #444',
+      
+    },
+
+
   container: {
     flex: 1,
     padding: '40px',
@@ -124,8 +138,9 @@ const styles = {
     fontSize: '36px',
     textAlign: 'center',
     marginBottom: '40px',
-    color: '#00eaff',
-    textShadow: '0 0 10px #00eaff, 0 0 20px #00eaff',
+    color: '#6441A5',
+    fontWeight: '100px',
+    fontFamily: 'Tahoma, sans-serif' 
   },
   grid: {
     display: 'grid',

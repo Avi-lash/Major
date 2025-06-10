@@ -18,6 +18,8 @@ export default function LoginForm() {
 
   const handleSubmit = async (e) => {
   e.preventDefault();
+  const ADMIN_EMAIL = "xpeditionorg@gmail.com";
+    const ADMIN_PASSWORD = "Admin123@";
   try {
     localStorage.setItem('userRole', form.role);
 
@@ -40,7 +42,18 @@ export default function LoginForm() {
 
     const resData = response.data;
 
+
+
     if (resData.status === 'success') {
+
+      
+    if (form.email === ADMIN_EMAIL && form.password === ADMIN_PASSWORD) {
+      localStorage.setItem('userRole', 'admin'); // Store 'admin' role
+      toast.success("Welcome, Admin!");
+      navigate("/admin");
+      return; 
+    }
+
       if (form.role === 'teacher') {
         localStorage.setItem(
           'teacher',
@@ -139,7 +152,7 @@ export default function LoginForm() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-3 rounded-lg font-semibold"
+            className="w-full bg-sky-600 hover:bg-sky-400 shadow-lg hover:shadow-blue-500 transition text-white py-3 rounded-lg font-semibold"
           >
             Log in
           </button>

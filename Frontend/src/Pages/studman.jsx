@@ -9,7 +9,7 @@ const StudentManagement = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phoneNumber: '', // Assuming this field exists in StudentEntity
+    phnno: '', // Assuming this field exists in StudentEntity
     address: '',     // Assuming this field exists
     // Add other relevant student fields here
   });
@@ -68,7 +68,7 @@ const StudentManagement = () => {
     setFormData({
       name: student.name || '',
       email: student.email || '',
-      phoneNumber: student.phoneNumber || '', // Assuming field name
+      phnno: student.phnno || '', // Assuming field name
       address: student.address || '',         // Assuming field name
       // ...map other fields from student object
     });
@@ -98,15 +98,8 @@ const StudentManagement = () => {
   if (error) return <div className="text-center p-6 text-red-600">{error}</div>;
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <div className="container mx-auto p-6 from bg-purple-400 to bg-fuchsia-600 rounded-lg shadow-md mt-8">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Student Management</h1>
-
-      <button
-        onClick={() => setShowModal(true)}
-        className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-6 py-3 rounded-md mb-6 hover:from-purple-600 hover:to-purple-800 transition duration-300 shadow-lg"
-      >
-        Add New Student
-      </button>
 
       {/* Student List Table */}
       <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">

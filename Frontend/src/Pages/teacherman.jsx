@@ -98,15 +98,10 @@ const TeacherManagement = () => {
   if (error) return <div className="text-center p-6 text-red-600">{error}</div>;
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <div className="container mx-auto p-6 bg-gradient-to-r from-blue-500 to-blue-700 rounded-lg shadow-md mt-8">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Teacher Management</h1>
 
-      <button
-        onClick={() => setShowModal(true)}
-        className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-md mb-6 hover:from-blue-600 hover:to-blue-800 transition duration-300 shadow-lg"
-      >
-        Add New Teacher
-      </button>
+   
 
       {/* Teacher List Table */}
       <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">

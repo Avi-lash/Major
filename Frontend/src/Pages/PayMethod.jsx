@@ -32,7 +32,7 @@ const PayMethod = () => {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto bg-white shadow rounded text-black">
+    <div className="p-6 max-w-xl mx-auto bg-gray-700 shadow rounded text-black mt-8" >
       <h1 className="text-2xl font-bold mb-4">Payment for: {course.courseName}</h1>
       <p><strong>Course ID:</strong> {course.courseId}</p>
       <p><strong>Price:</strong> ₹{course.fees}</p>
@@ -44,7 +44,7 @@ const PayMethod = () => {
       <div className="flex gap-4">
         <button
           onClick={handleCardPayment}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded"
+          className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-sky-600 text-white px-6 py-3 rounded"
         >
           Pay with Card
         </button>

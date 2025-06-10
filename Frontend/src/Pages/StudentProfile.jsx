@@ -36,10 +36,10 @@ const StudentProfile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-indigo-100">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-indigo-700 mb-6">🎓 Student Profile</h2>
-        <div className="space-y-4 text-gray-700">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-indigo-500 mb-6">🎓 Student Profile</h2>
+        <div className="space-y-4 text-gray-200">
           <p><span className="font-semibold">Name:</span> {student.name}</p>
           <p><span className="font-semibold">Email:</span> {student.email}</p>
           <p><span className="font-semibold">Phone:</span> {student.phnno}</p>

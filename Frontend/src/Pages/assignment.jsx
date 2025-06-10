@@ -189,7 +189,7 @@ function AssignmentGeneratorPage() {
     });
 
     doc.save(`${courseTitle.replace(/[^a-z0-9]/gi, '_')}_Assignment.pdf`); // Sanitize filename
-    navigate("/teacherpanel");
+    navigate(`/upload/courseId=${selectedCourseId}`);
   };
 
   return (

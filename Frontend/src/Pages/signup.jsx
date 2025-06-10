@@ -186,7 +186,7 @@ export default function SignupForm() {
               type="submit"
               className={`w-full py-3 rounded-lg ${
                 loading ? 'bg-gray-600' : 'bg-indigo-500'
-              } text-white font-semibold hover:bg-indigo-600 transition duration-300`}
+              } text-white font-semibold hover:bg-indigo-600 shadow-lg hover:shadow-blue-700 transition duration-300`}
               disabled={loading}
             >
               {loading ? 'Signing Up...' : 'Sign Up'}

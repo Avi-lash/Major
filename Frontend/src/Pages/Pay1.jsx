@@ -123,7 +123,7 @@ const Pay1 = () => {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded text-black">
+    <div className="p-6 max-w-md mx-auto bg-gray-700 shadow-md rounded text-white mt-16">
       <h2 className="text-2xl font-bold mb-4">Pay with Card</h2>
       <p className="mb-4 text-lg">
         <strong>Amount:</strong> ₹{course.fees}

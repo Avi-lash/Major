@@ -1,151 +1,169 @@
-/* Course Form Page Background */
-.course-form-page {
-  min-height: 100vh;
-  width: 100%;
-  background-color: #111827;
+/* General Page Styling */
+body {
+  background-color: #e6f5e6;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0; /* It's good practice to reset default margin */
+}
+
+/* Apply flex properties to this container instead of the body */
+.course-form-page { /* Stack children vertically */
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh; /* Takes full height to enable vertical centering */
   padding: 2rem;
   box-sizing: border-box;
+}
+
+/* Main Heading outside the form */
+.main-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #004d00; /* Dark green for "GeeksforGeeks" */
+  margin-bottom: 0.5rem;
+}
+
+/* Sub-heading outside the form */
+.sub-title {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+/* Form Container */
+.feedback-form-container {
+  width: 100%;
+  max-width: 550px;
+  padding: 2.5rem;
+  background-color: #fafffa; /* Light green form background */
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Informational Text: "It only takes two minutes!!" */
+.info-text {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #2e8b57; /* Medium sea green */
+  font-size: 0.9rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 0.5rem; /* Space between icon and text */
 }
 
-/* Course Form Container */
-.course-form-container {
-  width: 100%;
-  max-width: 600px;
-  padding: 2rem;
-  background-color: #1f2937; /* Dark background */
-  border-radius: 12px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-  font-family: 'Segoe UI', sans-serif;
-}
-
-/* Form Title */
-.course-form-container h2 {
-  text-align: center;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  margin-bottom: 1.5rem;
-  color: #f9fafb;
-}
-
-/* Form Group Styling */
+/* General Form Group Styling */
 .form-group {
-  margin-bottom: 2.5rem; /* Increased space between fields */
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 1.5rem;
 }
 
+/* Label Styling (to accommodate icons) */
 .form-group label {
-  margin-bottom: 0.8rem;
-  font-weight: 500;
-  color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Space for icon */
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2e8b57; /* Medium sea green */
 }
 
-/* Input Fields */
+/* General Input and Textarea Styling */
 .form-group input[type="text"],
-.form-group input[type="number"] {
-  padding: 0.8rem 1.2rem;
-  border: 1px solid #374151;
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
-  background-color: #111827;
-  color: #f9fafb;
+  background-color: #ffffff;
+  color: #333;
   outline: none;
-  transition: border 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="number"]:focus {
-  border-color: #6366f1;
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
 }
 
-/* Rating Slider Group */
-.form-group.rating-group {
-  margin-bottom: 2rem; /* Adjusted space below the rating group */
+/* Focus style for inputs */
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #2e8b57;
+  box-shadow: 0 0 5px rgba(46, 139, 87, 0.3);
 }
 
-.rating-group label {
-  margin-bottom: 0.8rem; /* Space between label and slider */
+/* Radio Button Group */
+.radio-group {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+
+.radio-group label {
+  color: #333; /* Darker text for radio options */
   font-weight: 500;
-  color: #e5e7eb;
-}
-
-/* Separator Line between Label and Slider */
-.rating-separator {
-  width: 100%;
-  height: 1px;
-  background-color: #374151;
-  margin: 0.8rem 0 1rem 0;
-}
-
-/* Range Input Styling */
-.rating-group input[type="range"] {
-  width: 100%;
+  gap: 0.5rem;
   cursor: pointer;
-  accent-color: #6366f1; /* Purple accent for slider */
+}
+
+/* Hide default radio button */
+.radio-group input[type="radio"] {
+  display: none;
+}
+
+/* Custom radio button appearance */
+.radio-group label::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+/* Style for the selected radio button's custom circle */
+.radio-group input[type="radio"]:checked + label::before {
+  border-color: #007bff; /* Blue border for selected */
+  background-color: #fff;
+  /* Simulating the inner dot with a box-shadow */
+  box-shadow: inset 0 0 0 4px #007bff;
 }
 
 /* Submit Button */
 .submit-btn {
   width: 100%;
-  padding: 0.8rem 1.4rem;
+  padding: 0.9rem;
   border: none;
   border-radius: 8px;
-  background-color: #6366f1;
+  background-color: #2e8b57; /* Medium sea green */
   color: white;
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 1rem;
 }
 
 .submit-btn:hover {
+  background-color: #256d49; /* Darker green on hover */
   transform: translateY(-2px);
-  opacity: 0.9;
 }
 
 /* Responsive Adjustments */
-@media (max-width: 480px) {
-  .course-form-container h2 {
-    font-size: 1.8rem;
+@media (max-width: 600px) {
+  .main-title {
+    font-size: 2rem;
   }
-
-  .submit-btn {
+  .sub-title {
     font-size: 1rem;
   }
-}
-
-/* Rating Group Styling */
-.form-group.rating-group {
-  margin-bottom: 2.5rem; /* Adjusted bottom space */
-}
-
-.rating-group label {
-  display: block; /* Ensures label and stars are on separate lines */
-  margin-bottom: 0.8rem; /* Space between label and slider */
-  font-weight: 500;
-  color: #e5e7eb;
-}
-
-.rating-group .rating-label {
-  display: inline-block; /* Keeps stars on the same line with the label */
-  font-size: 1.2rem;
-}
-
-.rating-group .stars {
-  margin-right: 0.5rem;
-  color: #facc15; /* Yellow for stars */
-}
-
-/* Slider Style */
-.rating-group input[type="range"] {
-  width: 100%;
-  cursor: pointer;
-  accent-color: #6366f1; /* Purple accent for slider */
-}
-
-h3
-{
-  color: #e5e7eb;
+  .feedback-form-container {
+    padding: 1.5rem;
+  }
 }

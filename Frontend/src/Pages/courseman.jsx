@@ -135,7 +135,7 @@ const CourseManagement = () => {
   if (error) return <div className="text-center p-6 text-red-600">{error}</div>;
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <div className="container mx-auto p-6 bg-gradient-to-l from-sky-800 to-sky-600 rounded-lg shadow-md mt-7">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Course Management</h1>
 
       <button

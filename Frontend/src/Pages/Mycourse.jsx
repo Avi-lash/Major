@@ -37,15 +37,15 @@ const Mycourse = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto p-6 bg-gray-700 m-7 ">
       <h2 className="text-2xl font-bold mb-6">My Purchased Courses</h2>
       <ul className="space-y-4">
         {courses.map((course) => (
-          <li key={course.paymentId} className="border p-4 rounded shadow">
-            <p><strong>Course ID:</strong> {course.courseId}</p>
-            <p><strong>Teacher:</strong> {course.teacherName}</p>
-            <p><strong>Amount Paid:</strong> ₹{course.amount}</p>
-            <p>
+          <li key={course.paymentId} className="border-emerald-800 border-4 bg-gray-600 p-4 rounded shadow">
+            <p className="text-yellow-300"><strong>Course ID:</strong> {course.courseId}</p>
+            <p className="text-gray-300"><strong>Teacher:</strong> {course.teacherName}</p>
+            <p className="text-gray-300"><strong>Amount Paid:</strong> ₹{course.amount}</p>
+            <p className="text-gray-300">
               <strong>Purchase Date:</strong>{' '}
               {course.paymentDate ? new Date(course.paymentDate).toLocaleDateString() : 'N/A'}
             </p>

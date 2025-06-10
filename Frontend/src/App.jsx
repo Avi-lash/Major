@@ -61,11 +61,15 @@ const App = () => {
         <Route path="/courseupload" element={<CourseUploadForm />} />
         <Route path="/viewcourse" element={<CourseControlPanel />} />
 
-        {/* Admin & Payment */}
-        <Route path="/admin" element={<Admin />} />
+       {/*Admin */}
+
+       <Route path="/admin" element={<Admin />} />
         <Route path="/studentadmin" element={<StudentManagement />}/>
         <Route path="/teacheradmin" element={<TeacherManagement />}/>
         <Route path="/courseadmin" element={<CourseManagement />}/>
+
+        {/*Payment */}
+       
         <Route path="/paymethod" element={<PayMethod />} />
         <Route path="/pay1" element={<Pay1 />} />
         <Route path="/pay2" element={<Pay2 />} />

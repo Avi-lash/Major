@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 const CourseUploadForm = () => {
   const [formData, setFormData] = useState({
     courseName: '',
@@ -82,27 +81,47 @@ const CourseUploadForm = () => {
   };
 
   return (
-    <div className="animated-background">
-      <div className="form-container">
-        <h2>Upload Course</h2>
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
+    <div className="animated-background bg-gray-900 min-h-screen flex items-center justify-center p-4">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-md transform transition-all duration-300 hover:scale-105">
+        <h2 className="text-3xl font-bold text-center text-white mb-8">Upload Course</h2>
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
           {['courseName', 'description', 'fees', 'duration', 'teacherName'].map((field) => (
             <div className="form-group" key={field}>
-              <label>{field.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}</label>
+              <label htmlFor={field} className="block text-gray-400 text-sm font-semibold mb-2">
+                {field.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
+              </label>
               <input
                 type={field === 'fees' ? 'number' : 'text'}
+                id={field}
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
                 required
+                className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
               />
             </div>
           ))}
           <div className="form-group">
-            <label>Course Image</label>
-            <input type="file" accept="image/*" onChange={handleFileChange} required />
+            <label htmlFor="image" className="block text-gray-700 text-sm font-semibold mb-2">
+              Course Image
+            </label>
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={handleFileChange}
+              required
+              className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"  />
           </div>
-          <button type="submit" className="submit-button" disabled={loading}>
+          <button
+            type="submit"
+            className={`w-full py-3 px-4 rounded-lg text-white font-semibold transition duration-300 ease-in-out ${
+              loading
+                ? 'bg-blue-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+            }`}
+            disabled={loading}
+          >
             {loading ? "Submitting..." : "Submit"}
           </button>
         </form>
