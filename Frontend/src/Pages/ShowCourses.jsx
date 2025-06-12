@@ -68,28 +68,57 @@ const ShowCourses = () => {
 
   // Show courses list page
   return (
-    <div className="min-h-screen bg-gray-900 p-8">
-      <h1 className="text-4xl font-bold text-center text-gray-200 mb-8">🎓 Available Courses</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {courses.map((course) => (
-          <div key={course.courseId} className="bg-gray-700 p-6 shadow-xl hover:shadow-gray-400 rounded-lg transition-transform transform hover:scale-105">
+   <div className="min-h-screen bg-gray-800 p-10">
+  <h1 className="text-4xl font-bold text-center text-gray-200 mb-10">🎓 Available Courses</h1>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    {courses.map((course) => {
+      const gradients = [
+        'from-orange-400 to-yellow-300',
+        'from-purple-500 to-indigo-400',
+        'from-pink-500 to-rose-400',
+        'from-teal-400 to-cyan-300',
+        'from-blue-500 to-sky-400',
+      ];
+      const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+
+      return (
+        <div
+          key={course.courseId}
+          className="bg-purple-950 rounded-2xl shadow-md overflow-hidden transition-transform transform hover:scale-[1.02]"
+        >
+          <div className={`relative bg-gradient-to-tr ${randomGradient} h-44`}>
             <img
               src={`data:image/jpeg;base64,${course.imageBase64}`}
               alt={course.courseName}
-              className="w-full h-40 object-cover rounded-lg mb-4"
+              className="absolute inset-0 w-full h-full object-cover opacity-80 rounded-t-2xl"
             />
-            <h2 className="text-xl font-semibold text-gray-200">{course.courseName}</h2>
-            <p className="text-gray-200 text-sm mb-2">{course.description.slice(0, 80)}...</p>
+          </div>
+
+          <div className="p-5">
+            <h2 className="text-xl font-bold text-gray-200">{course.courseName}</h2>
+            <p className="text-gray-400 text-sm mt-1">
+              {course.description.slice(0, 80)}...
+            </p>
+
+            <div className="flex flex-wrap gap-2 mt-4 text-sm text-gray-900">
+              <span className="bg-gray-100 rounded-full px-3 py-1">👨‍🏫 {course.teacherName}</span>
+              <span className="bg-gray-100 rounded-full px-3 py-1">⏳ {course.duration}</span>
+              <span className="bg-gray-100 rounded-full px-3 py-1">💰 ₹{course.fees}</span>
+            </div>
+
             <button
               onClick={() => setSelectedCourseId(course.courseId)}
-              className="mt-2 bg-emerald-600 hover:bg-green-400 text-white px-4 py-2 rounded-lg w-full transition-colors duration-300"
+              className="mt-5 w-full bg-sky-600 hover:bg-sky-500 text-black font-semibold py-2 rounded-lg transition-all"
             >
               🔍 View Details
             </button>
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
   );
 };
 

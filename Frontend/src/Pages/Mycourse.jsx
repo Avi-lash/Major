@@ -9,6 +9,10 @@ const Mycourse = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const getRandomHexColor = () => {
+    return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+  };
+
   useEffect(() => {
     if (!studentId) return;
 
@@ -24,40 +28,76 @@ const Mycourse = () => {
       });
   }, [studentId]);
 
+  // New function to handle navigation to the Certificate page
+  const handleViewCertificate = (courseId) => {
+    // We can pass the studentId (from useParams) and the specific courseId
+    // The Certificate component will then use these IDs to fetch the full names.
+    navigate('/certificate', {
+      state: {
+        studentId: studentId,
+        courseId: courseId
+      }
+    });
+  };
+
+
   if (loading) {
-    return <div className="text-center mt-10">Loading purchased courses...</div>;
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center text-gray-800 text-lg">
+        Loading purchased courses...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center mt-10 text-red-600">{error}</div>;
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center text-red-600 text-lg">
+        {error}
+      </div>
+    );
   }
 
   if (courses.length === 0) {
-    return <div className="text-center mt-10">No courses purchased yet.</div>;
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center text-gray-800 text-lg">
+        No courses purchased yet.
+      </div>
+    );
   }
 
+
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-gray-700 m-7 ">
-      <h2 className="text-2xl font-bold mb-6">My Purchased Courses</h2>
-      <ul className="space-y-4">
+    <div className="popular-section min-h-screen">
+      <div className="popular-header">
+        <h2>My Purchased Courses</h2>
+      </div>
+
+      <div className="popular-courses">
         {courses.map((course) => (
-          <li key={course.paymentId} className="border-emerald-800 border-4 bg-gray-600 p-4 rounded shadow">
-            <p className="text-yellow-300"><strong>Course ID:</strong> {course.courseId}</p>
-            <p className="text-gray-300"><strong>Teacher:</strong> {course.teacherName}</p>
-            <p className="text-gray-300"><strong>Amount Paid:</strong> ₹{course.amount}</p>
-            <p className="text-gray-300">
-              <strong>Purchase Date:</strong>{' '}
-              {course.paymentDate ? new Date(course.paymentDate).toLocaleDateString() : 'N/A'}
-            </p>
-            <button
-              onClick={() => navigate(`/quiz/${course.courseId}`)}
-              className="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-            >
-              START LEARNING
-            </button>
-          </li>
+          <div key={course.paymentId} className="course-card">
+            <div className="card-header">
+              Course ID: <span style={{ color: "#00ff9d" }}>{course.courseId}</span>
+            </div>
+            <div className="card-body">
+              <h4>👨‍🏫 Teacher: {course.teacherName}</h4>
+              <p className="learners">💰 Amount Paid: ₹{course.amount}</p>
+              <p className="rating">
+                📅 Purchase Date:{" "}
+                {course.paymentDate ? new Date(course.paymentDate).toLocaleDateString() : "N/A"}
+              </p>
+
+              {/* Start Learning Button */}
+              <button
+                onClick={() => navigate(`/quiz/${course.courseId}`,  { state: { studentId: studentId } })} // Changed from /quiz to /learn
+                className="offer-btn"
+                style={{ backgroundColor: getRandomHexColor() }}
+              >
+                START LEARNING
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

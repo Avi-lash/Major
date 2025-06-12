@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const UpdatePasswordForm = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -9,6 +10,7 @@ const UpdatePasswordForm = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -33,6 +35,7 @@ const UpdatePasswordForm = () => {
     }
 
     const role = localStorage.getItem("userRole");
+    const email = localStorage.getItem("email");
 
     if (!role) {
       toast.error("Please select a role during login.");
@@ -40,7 +43,7 @@ const UpdatePasswordForm = () => {
     }
 
     setLoading(true);
-    setError(null);
+    setError(null); // ✅ clear error before request
 
     try {
       const endpoint =
@@ -49,13 +52,16 @@ const UpdatePasswordForm = () => {
           : "http://localhost:8080/teacher/update-password";
 
       const response = await axios.put(endpoint, {
-        newPassword,
+        email: email,
+        password: newPassword,
       });
 
       toast.success(response.data.message || "Password updated successfully!");
+      setError(null); // ✅ clear error after success
       setNewPassword("");
       setConfirmPassword("");
-      localStorage.removeItem("userRole"); // Clean up
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("email");
       navigate('/Login');
     } catch (err) {
       const msg = err.response?.data?.message || "Something went wrong!";

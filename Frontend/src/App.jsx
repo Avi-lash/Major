@@ -31,6 +31,7 @@ import CourseManagement from './Pages/courseman';
 // Components
 import Navbar from './assets/components/Navbar';
 import VideoUpload from './Pages/VideoUpload';
+import Certificate from './Pages/certificate';
 
 const App = () => {
   return (
@@ -78,6 +79,7 @@ const App = () => {
 
         {/* Quiz */}
         <Route path="/quiz/:courseId" element={<Quiz />} />
+        <Route path="certificate" element={<Certificate />} />
 
         {/* Video Upload Route */}
         <Route path="/upload/:courseId" element={<UploadWrapper />} />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const API_KEY = "AIzaSyBWu4NbRJRpUyJ8yF9iK5oTrQtte-S-aMc"; // Ensure your actual API key is here
@@ -8,44 +8,49 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 
 function LearningPage() {
   const { courseId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation(); // Initialize useLocation hook
+
+  // Retrieve studentId from location.state
+  const studentId = location.state?.studentId;
 
   const [videoId, setVideoId] = useState(null);
   const [videoTitle, setVideoTitle] = useState("Loading Video...");
-  // NEW: Add state for videoDescription
   const [videoDescription, setVideoDescription] = useState("");
 
   const [assignmentUrl, setAssignmentUrl] = useState(null);
   const [loadingAssignment, setLoadingAssignment] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // General error for video/assignment loading
 
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
-  const [status, setStatus] = useState("start"); // "start", "loading", "ready"
-  const [errorMessage, setErrorMessage] = useState("");
+  const [status, setStatus] = useState("start"); // "start", "loading", "ready" for quiz
+  const [errorMessage, setErrorMessage] = useState(""); // Error specifically for quiz generation
   const [answers, setAnswers] = useState([]);
 
-  // Fetch videoId, videoTitle, AND videoDescription based on courseId
-  // This useEffect fetches the *primary* video for a course
+  // --- Fetch videoId, videoTitle, AND videoDescription based on courseId ---
   useEffect(() => {
-    if (!courseId) return;
+    if (!courseId) {
+      setError("Course ID is missing.");
+      return;
+    }
 
     const fetchVideoByCourse = async () => {
       try {
-        // This endpoint should return videoId, title, and description
         const response = await axios.get(`http://localhost:8080/api/v1/courses/${courseId}/video`);
         const { videoId: fetchedVideoId, title, description } = response.data;
 
         setVideoId(fetchedVideoId);
-        setVideoTitle(title || "");
-        setVideoDescription(description || ""); // Set the description here
+        setVideoTitle(title || "Untitled Video");
+        setVideoDescription(description || "");
       } catch (error) {
         console.error("Failed to fetch video for course", error);
         setVideoId(null);
-        setVideoTitle("");
-        setVideoDescription(""); // Clear on error
+        setVideoTitle("Video Not Found");
+        setVideoDescription("");
         setError("Failed to load video info for this course.");
       }
     };
@@ -53,22 +58,20 @@ function LearningPage() {
     fetchVideoByCourse();
   }, [courseId]);
 
-  // Fetch assignment URL and ensure videoTitle/description are updated from /videos/{videoId} endpoint
+  // --- Fetch assignment URL and ensure videoTitle/description are updated from /videos/{videoId} endpoint ---
   useEffect(() => {
     if (!videoId) return;
 
     const fetchAssignmentAndMetadata = async () => {
       setLoadingAssignment(true);
-      setError("");
+      // Don't clear main 'error' here, as it might be from initial video fetch
       try {
-        // This endpoint (`/api/v1/videos/{videoId}`) now provides the description
         const response = await axios.get(`http://localhost:8080/api/v1/videos/${videoId}`);
-        const { assignmentPath, title, description } = response.data; // Destructure description
+        const { assignmentPath, title, description } = response.data;
 
-        // Update videoTitle and videoDescription from this response as well
-        // (important if the /courses/{courseId}/video endpoint doesn't give full details)
+        // Update videoTitle and videoDescription from this response as well for robustness
         if (title) setVideoTitle(title);
-        if (description) setVideoDescription(description); // Set the description again for robustness
+        if (description) setVideoDescription(description);
 
         if (assignmentPath) {
           setAssignmentUrl(`http://localhost:8080/api/v1/videos/download-assignment/${videoId}`);
@@ -76,6 +79,7 @@ function LearningPage() {
           setAssignmentUrl(null);
         }
       } catch (err) {
+        // Specific error for assignment/full metadata
         setError("Failed to load assignment or full video info.");
         setAssignmentUrl(null);
       } finally {
@@ -84,7 +88,7 @@ function LearningPage() {
     };
 
     fetchAssignmentAndMetadata();
-  }, [videoId]); // Re-run when videoId changes
+  }, [videoId]);
 
   // Memoized video stream URL for efficiency
   const videoStreamUrl = videoId ? `http://localhost:8080/api/v1/videos/stream/${videoId}` : "";
@@ -100,7 +104,6 @@ function LearningPage() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      // Use videoTitle for the download filename for clarity
       link.setAttribute("download", `${videoTitle.replace(/[^a-z0-9]/gi, '_')}_assignment.pdf`);
       document.body.appendChild(link);
       link.click();
@@ -111,23 +114,35 @@ function LearningPage() {
     }
   };
 
+  // --- NEW: Handle navigation to Certificate page ---
+  const handleViewCertificate = () => {
+    if (!studentId || !courseId) {
+      setErrorMessage("Cannot view certificate: student ID or course ID is missing.");
+      return;
+    }
+    navigate('/certificate', {
+      state: {
+        studentId: studentId,
+        courseId: courseId
+      }
+    });
+  };
+
   // --- Quiz Generation Logic ---
   const startQuiz = async () => {
     setStatus("loading");
     setErrorMessage("");
 
-    // NEW: Check if videoDescription is available before generating quiz
     if (!videoDescription || videoDescription.trim() === "") {
       setErrorMessage("Video description is not available to generate a quiz. Please ensure the video has a description.");
       setStatus("start");
-      return; // Stop execution if no description
+      return;
     }
 
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-      // CRUCIAL CHANGE: Use videoDescription in the prompt for better quiz relevance
-      const prompt = `Create 5 multiple-choice quiz questions based on the following video description:
+      const prompt = `Create 10 multiple-choice quiz questions based on the following video description:
       "${videoDescription}"
       Ensure the questions are directly relevant to the content described.
       Format the output as a JSON array of objects. Each object must have "question" (string), "options" (array of strings, with at least 2 options), and "answer" (string, which must be one of the options). Example: [{"question": "What is 2+2?", "options": ["1", "2", "3", "4"], "answer": "4"}]`;
@@ -146,7 +161,6 @@ function LearningPage() {
         return;
       }
 
-      // Basic validation of parsedQuestions structure for robustness
       if (!Array.isArray(parsedQuestions) || parsedQuestions.length === 0) {
         setErrorMessage("AI returned an empty or malformed quiz. Please try again.");
         setStatus("start");
@@ -251,7 +265,6 @@ function LearningPage() {
             <button
               onClick={startQuiz}
               className="w-full bg-green-600 px-4 py-2 rounded mb-2"
-              // NEW: Disable button if no description or if loading
               disabled={!videoDescription || videoDescription.trim() === "" || status === "loading"}
               title={(!videoDescription || videoDescription.trim() === "") ? "Video description is required to generate quiz" : ""}
             >
@@ -280,6 +293,25 @@ function LearningPage() {
               <button onClick={startQuiz} className="mt-4 w-full bg-blue-600 px-4 py-2 rounded">
                 Restart Quiz
               </button>
+
+              {/* NEW: VIEW CERTIFICATE BUTTON */}
+              {/* This button appears after the quiz score is shown */}
+               {score >= 7 && ( // <--- ADD THIS CONDITION HERE
+                <button
+                  onClick={handleViewCertificate}
+                  className="mt-4 w-full bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded font-semibold"
+                  // Optional: Disable if studentId or courseId are missing, though handleViewCertificate checks this
+                  disabled={!studentId || !courseId}
+                  title={(!studentId || !courseId) ? "Student or Course ID missing for certificate" : ""}
+                >
+                  VIEW CERTIFICATE
+                </button>
+              )}
+              {score < 7 && questions.length > 0 && ( // Optional: message if score is too low
+                <p className="mt-4 text-center text-orange-400">
+                  You need a score of 7 or more to view the certificate.
+                </p>
+              )}
             </div>
           ) : (
             status === "ready" && questions[currentQuestion] && (
@@ -326,7 +358,7 @@ function LearningPage() {
               Your browser does not support the video tag.
             </video>
           ) : (
-            <p className="text-center text-gray-400">Loading video...</p>
+            <p className="text-center text-gray-400">{error || "Loading video..."}</p>
           )}
         </div>
       </div>

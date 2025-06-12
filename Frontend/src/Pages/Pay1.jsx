@@ -42,9 +42,7 @@ const Pay1 = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Allow only digits for card number and cvv
     if ((name === 'number' || name === 'cvv') && /\D/.test(value)) return;
-
     setCardInfo({ ...cardInfo, [name]: value });
 
     if (errors[name]) {
@@ -69,7 +67,6 @@ const Pay1 = () => {
       const expMonth = expiry.getMonth();
       const nowYear = now.getFullYear();
       const nowMonth = now.getMonth();
-
       if (expYear < nowYear || (expYear === nowYear && expMonth < nowMonth)) {
         newErrors.expiry = 'Expiry date must be current or future month.';
       }
@@ -112,7 +109,6 @@ const Pay1 = () => {
         withCredentials: true,
       });
       alert('Payment successful!');
-      // Redirect to /mycourse/:studentId
       navigate(`/mycourse/${userId}`);
     } catch (err) {
       console.error('Payment failed:', err);
@@ -123,82 +119,90 @@ const Pay1 = () => {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-gray-700 shadow-md rounded text-white mt-16">
-      <h2 className="text-2xl font-bold mb-4">Pay with Card</h2>
-      <p className="mb-4 text-lg">
-        <strong>Amount:</strong> ₹{course.fees}
-      </p>
+    <div className="min-h-screen w-full bg-black flex items-center justify-center">
+      <div className="p-6 max-w-md w-full bg-gray-700 shadow-md rounded text-white">
+         <img
+          src="https://cdn.shopify.com/s/files/1/0551/4575/8907/files/Asset_5.png?v=1741776408&width=2048"
+          alt="PayPal"
+          className="w-32 mx-auto mb-6"
+        />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1">Cardholder Name</label>
-          <input
-            type="text"
-            name="name"
-            value={cardInfo.name}
-            onChange={handleChange}
-            className="w-full border border-gray-300 px-3 py-2 rounded"
-            disabled={loading}
-          />
-          {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
-        </div>
+        <h2 className="text-2xl font-bold mb-4">Pay with Card</h2>
+        <p className="mb-4 text-lg">
+          <strong>Amount:</strong> ₹{course.fees}
+        </p>
 
-        <div>
-          <label className="block mb-1">Card Number</label>
-          <input
-            type="text"
-            name="number"
-            maxLength={16}
-            value={cardInfo.number}
-            onChange={handleChange}
-            className="w-full border border-gray-300 px-3 py-2 rounded"
-            disabled={loading}
-          />
-          {errors.number && <p className="text-red-600 text-sm">{errors.number}</p>}
-        </div>
-
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="block mb-1">Expiry Date</label>
-            <DatePicker
-              selected={cardInfo.expiry}
-              onChange={(date) => {
-                setCardInfo({ ...cardInfo, expiry: date });
-                if (errors.expiry) setErrors((prev) => ({ ...prev, expiry: null }));
-              }}
-              dateFormat="MM/yyyy"
-              showMonthYearPicker
-              className="w-full border border-gray-300 px-3 py-2 rounded"
-              placeholderText="MM/YYYY"
-              minDate={new Date()}
-              disabled={loading}
-            />
-            {errors.expiry && <p className="text-red-600 text-sm">{errors.expiry}</p>}
-          </div>
-
-          <div className="flex-1">
-            <label className="block mb-1">CVV</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block mb-1">Cardholder Name</label>
             <input
-              type="password"
-              name="cvv"
-              maxLength={3}
-              value={cardInfo.cvv}
+              type="text"
+              name="name"
+              value={cardInfo.name}
               onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded"
+              className="w-full border border-gray-300 px-3 py-2 rounded text-black"
               disabled={loading}
             />
-            {errors.cvv && <p className="text-red-600 text-sm">{errors.cvv}</p>}
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
-        </div>
 
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded w-full disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? 'Processing...' : 'Confirm Payment'}
-        </button>
-      </form>
+          <div>
+            <label className="block mb-1">Card Number</label>
+            <input
+              type="text"
+              name="number"
+              maxLength={16}
+              value={cardInfo.number}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded text-black"
+              disabled={loading}
+            />
+            {errors.number && <p className="text-red-500 text-sm">{errors.number}</p>}
+          </div>
+
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label className="block mb-1">Expiry Date</label>
+              <DatePicker
+                selected={cardInfo.expiry}
+                onChange={(date) => {
+                  setCardInfo({ ...cardInfo, expiry: date });
+                  if (errors.expiry) setErrors((prev) => ({ ...prev, expiry: null }));
+                }}
+                dateFormat="MM/yyyy"
+                showMonthYearPicker
+                className="w-full border border-gray-300 px-3 py-2 rounded text-black"
+                placeholderText="MM/YYYY"
+                minDate={new Date()}
+                disabled={loading}
+              />
+              {errors.expiry && <p className="text-red-500 text-sm">{errors.expiry}</p>}
+            </div>
+
+            <div className="flex-1">
+              <label className="block mb-1">CVV</label>
+              <input
+                type="password"
+                name="cvv"
+                maxLength={3}
+                value={cardInfo.cvv}
+                onChange={handleChange}
+                className="w-full border border-gray-300 px-3 py-2 rounded text-black"
+                disabled={loading}
+              />
+              {errors.cvv && <p className="text-red-500 text-sm">{errors.cvv}</p>}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded w-full disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? 'Processing...' : 'Confirm Payment'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -44,11 +44,10 @@ public class VideoController {
         Optional<CourseEntity> courseOptional = courseService.findById(courseId);
 
         if (courseOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(CustomMessage.builder()
-                            .message("Invalid course ID")
-                            .success(false)
-                            .build());
+            CustomMessage msg = new CustomMessage();
+            msg.setMessage("Invalid course ID");
+            msg.setSuccess(false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
         }
 
         Video video = new Video();
@@ -62,8 +61,10 @@ public class VideoController {
         if (savedVideo != null) {
             return ResponseEntity.ok(savedVideo);
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(CustomMessage.builder().message("Upload failed").success(false).build());
+            CustomMessage msg = new CustomMessage();
+            msg.setMessage("Upload failed");
+            msg.setSuccess(false);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg);
         }
     }
 
