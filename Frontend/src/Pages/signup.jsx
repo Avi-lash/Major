@@ -56,7 +56,7 @@ export default function SignupForm() {
           ? 'http://localhost:8080/teacher/register'
           : 'http://localhost:8080/student/register';
 
-      await axios.post(
+     const check = await axios.post(
         endpoint,
         {
           name: form.name,
@@ -70,7 +70,13 @@ export default function SignupForm() {
         }
       );
 
-      toast.success('Signup successful!');
+  if (check.status === 201) {
+  toast.success('Signup successful!');
+  navigate('/login');
+}
+
+      
+   
       setForm({
         name: '',
         email: '',
@@ -79,9 +85,7 @@ export default function SignupForm() {
         confirmPassword: '',
         role: 'teacher'
       });
-      
-        navigate('/login');
-      
+       
     } catch (err) {
       console.error(err);
       if (err.response && err.response.data.includes('Email already registered')) {

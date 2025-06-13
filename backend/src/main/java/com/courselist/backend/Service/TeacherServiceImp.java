@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 
 import com.courselist.backend.config.JwtUtil;
 import com.courselist.backend.dbCLasses.TeacherEntity;
+import com.courselist.backend.repository.StudentRepository;
 import com.courselist.backend.repository.TeacherRepository;
 
 @Service
 public class TeacherServiceImp {
 
+    @Autowired
+    private StudentRepository studentRepository;
     @Autowired
     private TeacherRepository teacherRepository;
 
@@ -28,9 +31,13 @@ public class TeacherServiceImp {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public String createTeacher(TeacherEntity teacher) {
-        if (teacherRepository.existsByEmail(teacher.getEmail())) {
+        if (teacherRepository.existsByEmail(teacher.getEmail()) ) {
             return "Email already registered";
         }
+        if(studentRepository.existsByEmail(teacher.getEmail())){
+             return "Email already registered";
+        }
+        
         teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         teacherRepository.save(teacher);
         emailservice.sendEmail(teacher.getEmail(), "Registration Successful", "Your account has been created.");

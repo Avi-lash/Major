@@ -24,11 +24,14 @@ import com.courselist.backend.Controller.StudentController;
 import com.courselist.backend.dbCLasses.StudentEntity;
 import com.courselist.backend.dbCLasses.TeacherEntity;
 import com.courselist.backend.repository.StudentRepository;
+import com.courselist.backend.repository.TeacherRepository;
 
 
 @Service
 public class StudentServiceImp {
 
+      @Autowired
+    private TeacherRepository teacherRepository;
      @Autowired
     private StudentRepository studentRepository;
     @Autowired
@@ -43,11 +46,13 @@ public class StudentServiceImp {
 
 
     public String createStudent(StudentEntity student) {
-      
+       
         if (studentRepository.existsByEmail(student.getEmail())) {
             return "Email already registered";
         }
-
+         if (teacherRepository.existsByEmail(student.getEmail()) ) {
+            return "Email already registered";
+        }
         // Hash the password
         student.setPassword(passwordEncoder.encode(student.getPassword()));
         studentRepository.save(student);
